@@ -1,0 +1,7 @@
+# ninja log v5
+3	91	7325541497885119	CMakeFiles/Projeto1DA.dir/src/main.cpp.obj	417a8be4ab427b18
+4	954	7325541894045026	CMakeFiles/Projeto1DA.dir/src/Menu/Menu.cpp.obj	2f660647fa1119e3
+14	250	7325542392726958	CMakeFiles/Projeto1DA.dir/src/graph/Info.cpp.obj	21e309045af7909d
+1	149	7325605448301954	build.ninja	2d82a6ac542b2cb6
+4	435	7325606393432369	CMakeFiles/Projeto1DA.dir/src/parsing/parsing.cpp.obj	4b850a49ddd7d34e
+435	596	7325606394984456	Projeto1DA.exe	5da39948db508e65
