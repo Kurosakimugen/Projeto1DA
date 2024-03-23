@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "../graph/Network.h"
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -15,13 +16,16 @@ void Menu::quit() {
 }
 
 void Menu::run() {
-    /*
-    Network network;
-    network.readAiports("dataset/airports.csv");
-    network.readAirlines("dataset/airlines.csv");
-    network.readFlights("dataset/flights.csv");
-     */
 
+    Network network;
+    network.build();
+
+    nextPage();
+    mainPage();
+
+}
+
+void Menu::mainPage() {
     cout << "╒═════════════════════════════════════════════╕\n"
             "│                     TITLE                   │\n"
             "╞═════════════════════════════════════════════╡\n"
@@ -51,6 +55,9 @@ void Menu::run() {
             //todo
             break;
     }
+
 }
+
+
 
 

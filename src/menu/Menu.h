@@ -9,6 +9,8 @@ class Menu {
 public:
     void run();
 
+    void mainPage();
+
 };
 
 

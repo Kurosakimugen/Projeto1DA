@@ -5,9 +5,11 @@ set(CMAKE_CXX_STANDARD 14)
 
 add_executable(Projeto1DA
         src/main.cpp
-        src/parsing/parsing.cpp
-        src/parsing/parsing.h
-        src/Menu/Menu.h
-        src/Menu/Menu.cpp
+        src/menu/Menu.h
+        src/menu/Menu.cpp
         src/graph/Info.cpp
-        src/graph/Info.h)
+        src/graph/Info.h
+        src/graph/Network.h
+        src/graph/Network.cpp
+        src/graph/Vertex.h
+        src/graph/Vertex.cpp)

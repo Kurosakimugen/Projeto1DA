@@ -55,20 +55,26 @@ build CMakeFiles/Projeto1DA.dir/src/main.cpp.obj: CXX_COMPILER__Projeto1DA_unsca
   OBJECT_DIR = CMakeFiles\Projeto1DA.dir
   OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src
 
-build CMakeFiles/Projeto1DA.dir/src/parsing/parsing.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/parsing/parsing.cpp || cmake_object_order_depends_target_Projeto1DA
-  DEP_FILE = CMakeFiles\Projeto1DA.dir\src\parsing\parsing.cpp.obj.d
+build CMakeFiles/Projeto1DA.dir/src/menu/Menu.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/menu/Menu.cpp || cmake_object_order_depends_target_Projeto1DA
+  DEP_FILE = CMakeFiles\Projeto1DA.dir\src\menu\Menu.cpp.obj.d
   FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\Projeto1DA.dir
-  OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\parsing
-
-build CMakeFiles/Projeto1DA.dir/src/Menu/Menu.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/Menu/Menu.cpp || cmake_object_order_depends_target_Projeto1DA
-  DEP_FILE = CMakeFiles\Projeto1DA.dir\src\Menu\Menu.cpp.obj.d
-  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
-  OBJECT_DIR = CMakeFiles\Projeto1DA.dir
-  OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\Menu
+  OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\menu
 
 build CMakeFiles/Projeto1DA.dir/src/graph/Info.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/graph/Info.cpp || cmake_object_order_depends_target_Projeto1DA
   DEP_FILE = CMakeFiles\Projeto1DA.dir\src\graph\Info.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Projeto1DA.dir
+  OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\graph
+
+build CMakeFiles/Projeto1DA.dir/src/graph/Network.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/graph/Network.cpp || cmake_object_order_depends_target_Projeto1DA
+  DEP_FILE = CMakeFiles\Projeto1DA.dir\src\graph\Network.cpp.obj.d
+  FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\Projeto1DA.dir
+  OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\graph
+
+build CMakeFiles/Projeto1DA.dir/src/graph/Vertex.cpp.obj: CXX_COMPILER__Projeto1DA_unscanned_Debug C$:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/src/graph/Vertex.cpp || cmake_object_order_depends_target_Projeto1DA
+  DEP_FILE = CMakeFiles\Projeto1DA.dir\src\graph\Vertex.cpp.obj.d
   FLAGS = -g -std=gnu++14 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\Projeto1DA.dir
   OBJECT_FILE_DIR = CMakeFiles\Projeto1DA.dir\src\graph
@@ -81,7 +87,7 @@ build CMakeFiles/Projeto1DA.dir/src/graph/Info.cpp.obj: CXX_COMPILER__Projeto1DA
 #############################################
 # Link the executable Projeto1DA.exe
 
-build Projeto1DA.exe: CXX_EXECUTABLE_LINKER__Projeto1DA_Debug CMakeFiles/Projeto1DA.dir/src/main.cpp.obj CMakeFiles/Projeto1DA.dir/src/parsing/parsing.cpp.obj CMakeFiles/Projeto1DA.dir/src/Menu/Menu.cpp.obj CMakeFiles/Projeto1DA.dir/src/graph/Info.cpp.obj
+build Projeto1DA.exe: CXX_EXECUTABLE_LINKER__Projeto1DA_Debug CMakeFiles/Projeto1DA.dir/src/main.cpp.obj CMakeFiles/Projeto1DA.dir/src/menu/Menu.cpp.obj CMakeFiles/Projeto1DA.dir/src/graph/Info.cpp.obj CMakeFiles/Projeto1DA.dir/src/graph/Network.cpp.obj CMakeFiles/Projeto1DA.dir/src/graph/Vertex.cpp.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\Projeto1DA.dir
