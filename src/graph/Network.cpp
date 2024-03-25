@@ -119,26 +119,42 @@ void Network::read_stationsFile(string stationsFilename) {
 
 void Network::read_pipesFile(string pipesFilename) {
     ifstream file(pipesFilename);
-
     if (!file.is_open()) {
         cerr << "Error opening file: " << pipesFilename << endl;
         return;
     }
 
     string line;
-    getline(file,line);
-    while (getline(file,line)) {
+    getline(file, line); // Ignora cabeçalho
+    while (getline(file, line)) {
         istringstream iss(line);
-        string ServicePointA, ServicePointB, CapacityString, Direction;
-        if (getline (iss, ServicePointA, ',') &&
-            getline (iss, ServicePointB, ',') &&
-            getline (iss, CapacityString, ',') &&
-            getline (iss, Direction, ','));
-        else {
+        string servicePointA, servicePointB, capacityString, direction;
+        if (!(getline(iss, servicePointA, ',') &&
+              getline(iss, servicePointB, ',') &&
+              getline(iss, capacityString, ',') &&
+              getline(iss, direction, ','))) {
             cerr << "Error parsing line: " << line << endl;
+            continue;
         }
+
+        Vertex* src = vertexMap[servicePointA];
+        Vertex* dest = vertexMap[servicePointB];
+        double capacity = stod(capacityString);
+        bool isDirected = direction == "1";
+
+        Edge* newEdge = new Edge(src, dest, capacity, isDirected);
+        edgeSet.push_back(newEdge);
     }
     file.close();
+}
+
+Network::~Network() {
+    for (auto* v : vertexSet) {
+        delete v;
+    }
+    for (auto* e : edgeSet) {
+        delete e;
+    }
 }
 
 
@@ -148,6 +164,7 @@ void Network::build() {
     this->read_reservoirsFile("Dataset\\Reservoirs_Madeira.csv");
     this->read_citiesFile("Dataset\\Cities_Madeira.csv");
     this->read_stationsFile("Dataset\\Stations_Madeira.csv");
+    this->read_pipesFile("Dataset\\Pipes_Madeira.csv");
     //todo- pipes read file
 }
 
