@@ -1,3 +1,0 @@
-C:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/cmake-build-debug/CMakeFiles/Projeto1DA.dir
-C:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/cmake-build-debug/CMakeFiles/edit_cache.dir
-C:/Users/Utilizador/OneDrive/Documentos/Code/CLion-stuff/DA/Projeto/Projeto1DA/cmake-build-debug/CMakeFiles/rebuild_cache.dir

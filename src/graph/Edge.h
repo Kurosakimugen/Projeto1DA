@@ -13,7 +13,10 @@ private:
 public:
     Edge(Vertex* src, Vertex* dest, double cap, bool isDir) :
         source(src), destiny(dest), capacity(cap), isDirected(isDir) {}
-
+    Vertex* getsource();
+    Vertex* getdestiny();
+    double getcapacity();
+    bool getDirected();
 };
 
 #endif // EDGE_H

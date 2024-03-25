@@ -161,10 +161,10 @@ Network::~Network() {
 void Network::build() {
     //calls all reads at once
 
-    this->read_reservoirsFile("Dataset\\Reservoirs_Madeira.csv");
-    this->read_citiesFile("Dataset\\Cities_Madeira.csv");
-    this->read_stationsFile("Dataset\\Stations_Madeira.csv");
-    this->read_pipesFile("Dataset\\Pipes_Madeira.csv");
+    this->read_reservoirsFile("\\Reservoirs_Madeira.csv");
+    this->read_citiesFile("\\Cities_Madeira.csv");
+    this->read_stationsFile("\\Stations_Madeira.csv");
+    this->read_pipesFile("\\Pipes_Madeira.csv");
     //todo- pipes read file
 }
 

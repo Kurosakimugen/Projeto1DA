@@ -12,6 +12,8 @@ private:
 
 public:
     Vertex(Info info);
+    Info getinfo();
+
 
 
 };
