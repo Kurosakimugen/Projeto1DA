@@ -36,4 +36,34 @@ Info::Info(int id, string code) {
     this->code = code;
 }
 
+double Info::getCapacity() {
+    return capacity;
+}
 
+string Info::getCode() {
+    return code;
+}
+
+string Info::getName() {
+    return name;
+}
+
+double Info::getPopulation() {
+    return population;
+}
+
+void Info::setCapacity(double nCapacity) {
+    capacity = nCapacity;
+}
+
+void Info::setCode(std::string ncode) {
+    code = ncode;
+}
+
+void Info::setName(std::string nName) {
+    name = nName;
+}
+
+void Info::setPopulation(double nPopulation) {
+    population = nPopulation;
+}

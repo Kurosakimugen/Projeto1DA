@@ -58,7 +58,7 @@ void Network::read_citiesFile(string citiesFilename) {
             getline (iss, DemandString, ',') &&
             getline (iss, PopulationString)) {
 
-            //remove wierd formating & comma from PopulationString
+            //remove weird formatting & comma from PopulationString
             PopulationString = PopulationString.substr(1); // Remove the first character (leading double quote)
             if (PopulationString.back() == '"') { // Check if the last character is a double quote
                 PopulationString.pop_back(); // Remove the last character (trailing double quote)
@@ -160,7 +160,7 @@ Network::~Network() {
 
 void Network::build() {
     //calls all reads at once
-
+    //Rever os paths para os ficheiros serem lidos corretamente.
     this->read_reservoirsFile("\\Reservoirs_Madeira.csv");
     this->read_citiesFile("\\Cities_Madeira.csv");
     this->read_stationsFile("\\Stations_Madeira.csv");

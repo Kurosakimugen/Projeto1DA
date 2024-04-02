@@ -3,20 +3,37 @@
 
 #include "Vertex.h"
 
+template <class T>
 class Edge {
-private:
-    Vertex* source;
-    Vertex* destiny;
-    double capacity;
-    bool isDirected;
-
 public:
-    Edge(Vertex* src, Vertex* dest, double cap, bool isDir) :
-        source(src), destiny(dest), capacity(cap), isDirected(isDir) {}
-    Vertex* getsource();
-    Vertex* getdestiny();
-    double getcapacity();
-    bool getDirected();
-};
+    Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
 
+    Vertex<T> * getDest() const;
+    double getWeight() const;
+    Vertex<T> * getOrig() const;
+
+    //Parte do Selected
+    bool isSelected() const;
+    void setSelected(bool selected);
+
+    //Parte do Reverse
+    Edge<T> *getReverse() const;
+    void setReverse(Edge<T> *reverse);
+
+    //Parte do Flow
+    double getFlow() const;
+    void setFlow(double flow);
+protected:
+    Vertex<T> * dest; // destination vertex
+    double weight; // edge weight, can also be used for capacity
+
+    // auxiliary fields
+    bool selected = false;
+
+    // used for bidirectional edges
+    Vertex<T> *orig;
+    Edge<T> *reverse = nullptr;
+
+    double flow; // for flow-related problems
+};
 #endif // EDGE_H

@@ -12,7 +12,7 @@ private:
 
     double population;
 
-    int id;/*currently ignoring ID's, can be added later if necessary*/
+    int id; /*currently ignoring ID's, can be added later if necessary*/
 
     double maximumDelivery;
     double capacity;
@@ -24,22 +24,78 @@ private:
     bool isDeliverySite = false;
 
 public:
+    /**
+     * @brief Construtor default
+     */
     Info();
-    Info(string name,string municipality,int id,string code, double maximumDelivery); //WR
-    Info(string name,int id,string code,double demand, int population); //C
+    /**
+     * @brief Construtor utilizado para Water Resevoirs
+     * @param name
+     * @param municipality
+     * @param id
+     * @param code
+     * @param maximumDelivery
+     */
+    Info(string name,string municipality,int id,string code, double maximumDelivery);
+    /**
+     * @brief Construtor para Cities
+     * @param name
+     * @param id
+     * @param code
+     * @param demand
+     * @param population
+     */
+    Info(string name,int id,string code,double demand, int population);
+    /**
+     * @brief Construtor para Delivery Stations
+     * @param id
+     * @param code
+     */
     Info(int id, string code); //DS
 
-    void getCode();
-    void setCode();
+    /**
+     * @brief Função de getter do code
+     * @return Valor do code
+     */
+    string getCode();
+    /**
+     * @brief Função para dar set ao valor de code
+     * @param ncode
+     */
+    void setCode(string ncode);
 
-    void getName();
-    void setName();
+    /**
+     * @brief Função de getter do Name
+     * @return Valor do Name
+     */
+    string getName();
+    /**
+     * @brief Função para dar set ao valor do Name
+     * @param nName
+     */
+    void setName(string nName);
 
-    void setCapacity();
-    void getCapacity();
+    /**
+     * @brief Função de getter do Capacity
+     * @return Valor do Capacity
+     */
+    double getCapacity();
+    /**
+     * @brief Função para dar set ao valor de Capacity
+     * @param nCapacity
+     */
+    void setCapacity(double nCapacity);
 
-    void setPopulation();
-    void getPopulation();
+    /**
+     * @brief Função de getter do Population
+     * @return Valor do Population
+     */
+    double getPopulation();
+    /**
+     * @brief Função para dar set ao valor de Population
+     * @param nPopulation
+     */
+    void setPopulation(double nPopulation);
 };
 
 
