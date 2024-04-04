@@ -8,7 +8,7 @@ Vertex<T>::Vertex(T in): info(in) {}
  */
 template <class T>
 Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
-    auto newEdge = new Edge<T>(this, d, w);
+    auto newEdge = new Edge<T>(this, d, w, true);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -21,7 +21,7 @@ Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
  */
 template <class T>
 bool Vertex<T>::removeEdge(T in) {
-    bool removedEdge = false;
+   /* bool removedEdge = false;
     auto it = adj.begin();
     while (it != adj.end()) {
         Edge<T> *edge = *it;
@@ -36,6 +36,7 @@ bool Vertex<T>::removeEdge(T in) {
         }
     }
     return removedEdge;
+    */
 }
 
 /**
@@ -82,7 +83,7 @@ bool Vertex<T>::isProcessing() const {
     return this->processing;
 }
 template <class T>
-void Vertex<T>::setProcesssing(bool processing) {
+void Vertex<T>::setProcessing(bool processing) {
     this->processing = processing;
 }
 
@@ -128,7 +129,7 @@ void Vertex<T>::setInfo(T in) {
 
 template <class T>
 void Vertex<T>::deleteEdge(Edge<T> *edge) {
-    Vertex<T> *dest = edge->getDest();
+   /* Vertex<T> *dest = edge->getDest();
     // Remove the corresponding edge from the incoming list
     auto it = dest->incoming.begin();
     while (it != dest->incoming.end()) {
@@ -140,4 +141,6 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
         }
     }
     delete edge;
+    */
 }
+template class Vertex<Info>;

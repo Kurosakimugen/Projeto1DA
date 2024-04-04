@@ -1,7 +1,7 @@
 #include "Edge.h"
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double w): orig(orig), dest(dest), weight(w) {}
+Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isDirected): orig(orig), dest(dest), weight(weight), isDirected(isDirected) {}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() const {
@@ -47,3 +47,5 @@ template <class T>
 void Edge<T>::setFlow(double flow) {
     this->flow = flow;
 }
+
+template class Edge<Info>;

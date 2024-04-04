@@ -1,5 +1,10 @@
 #include "Menu.h"
+
 #include "../graph/Network.h"
+#include "../graph/Network.cpp"
+
+#include "../graph/Info.h"
+
 #include <iostream>
 #include <sstream>
 #include <iomanip>
@@ -15,20 +20,30 @@ void Menu::quit() {
     exit(0);
 }
 
+void Menu::parseCSVFiles(Network<Info> &network) {
+
+    /*
+     * read_reservoirsFile(network,"Dataset/Reservoirs_Madeira.csv");
+    read_citiesFile("Dataset/Cities_Madeira.csv");
+    read_stationsFile("Dataset/Stations_Madeira.csv");
+    read_pipesFile("Dataset/Pipes_Madeira.csv");*/
+}
+
+
 void Menu::run() {
 
-    Network network;
+    Network<Info> network;
+
     network.build();
 
-    nextPage();
     mainPage();
 
 }
 
 void Menu::mainPage() {
-    cout << "╒═════════════════════════════════════════════╕\n"
-            "│                     TITLE                   │\n"
-            "╞═════════════════════════════════════════════╡\n"
+    cout << " _____________________________________________ \n"
+            "|                     TITLE                   |\n"
+            "                                               \n"
             " > Placeholder                            [1]  \n"
             " > Placeholder                            [2]  \n"
             "                                               \n"
@@ -57,6 +72,8 @@ void Menu::mainPage() {
     }
 
 }
+
+
 
 
 

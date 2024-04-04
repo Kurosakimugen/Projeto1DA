@@ -1,18 +1,20 @@
 #ifndef PROJETO1DA_VERTEX_H
 #define PROJETO1DA_VERTEX_H
 
+
+#include <vector>
 #include "Info.h"
 #include "Edge.h"
-#include <vector>
 
+template <class T> class Edge;
 template <class T>
 class Vertex {
 public:
-    Vertex(T in);
-    bool operator<(Vertex<T> & vertex) const; // // required by MutablePriorityQueue
+    Vertex(T inf);//not sure
+    bool operator<(Vertex<T>& vertex) const; // // required by MutablePriorityQueue
 
     T getInfo() const;
-    std::vector<Edge<T> *> getAdj() const;
+    std::vector<Edge<T>*> getAdj() const;
 
     //Parte do visited
     bool isVisited() const;
@@ -20,7 +22,7 @@ public:
 
     //Parte do processing
     bool isProcessing() const;
-    void setProcesssing(bool processing);
+    void setProcessing(bool processing);
 
     //parte do indegree
     unsigned int getIndegree() const;
@@ -49,6 +51,7 @@ protected:
     bool processing = false; // used by isDAG (in addition to the visited attribute)
     unsigned int indegree; // used by topsort
     double dist = 0;
+
     Edge<T> *path = nullptr;
 
     std::vector<Edge<T> *> incoming; // incoming edges

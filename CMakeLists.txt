@@ -13,6 +13,7 @@ add_executable(Projeto1DA
         src/graph/Network.cpp
         src/graph/Vertex.h
         src/graph/Vertex.cpp
+        src/graph/Edge.h
         src/graph/Edge.cpp
         src/graph/graph.h
         src/graph/graph.cpp)
