@@ -64,7 +64,7 @@ double Info::getCapacity() {
     return capacity;
 }
 
-string Info::getCode() {
+string Info::getCode() const{
     return code;
 }
 
@@ -94,4 +94,8 @@ void Info::setPopulation(double nPopulation) {
 
 bool Info::getIsCity() {
     return isCity;
+}
+
+bool Info::getIsWaterReservour() const{
+    return isWaterReservour;
 }

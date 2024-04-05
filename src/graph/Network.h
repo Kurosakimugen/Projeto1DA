@@ -30,7 +30,26 @@ public:
     bool addEdge(const string &srcCode, const string &destCode, double w, bool isUnidirectional);
 
     bool removeVertex(const T &in);
+    std::unordered_map<std::string, double> verifyWaterSupply();
 
+
+    void verifyWaterCapacity(const string &outputFilename) const;
+
+    vector<string> removeReservoir(const string &reservoirCode);
+
+    bool checkDeliveryCapacity(const T &info) const;
+
+    void removePumpingStation(const string &stationCode);
+
+    void checkImpactOfRemovingPumpingStation(const string &stationCode);
+
+    void checkImpactOfAllPumpingStations();
+
+    unordered_map<string, Vertex<T> *> getVertices() const;
+
+    unordered_map<string, double> pumpingStationImpact(const Info &pumpingStationInfo) const;
+
+    unordered_map<string, double> allPumpingStationsImpact() const;
 
 };
 

@@ -16,7 +16,6 @@ private:
 
     double maximumDelivery;
     double capacity;
-    double demand;
 
     // the appropriate one is set to true when reading, the rest stays false
     bool isWaterReservour = false;
@@ -57,7 +56,7 @@ public:
      * @brief Função de getter do code
      * @return Valor do code
      */
-    string getCode();
+    string getCode() const;
     /**
      * @brief Função para dar set ao valor de code
      * @param ncode
@@ -100,6 +99,10 @@ public:
     bool operator==(const Info& other) const;
 
     bool getIsCity();
+    double demand;
+
+
+    bool getIsWaterReservour() const;
 };
 
 
