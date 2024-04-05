@@ -2,6 +2,7 @@
 #define PROJETO1DA_MENU_H
 
 
+#include <queue>
 #include "../graph/Network.h"
 
 class Menu {

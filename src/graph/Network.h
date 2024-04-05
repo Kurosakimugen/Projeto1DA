@@ -23,15 +23,16 @@ public:
     void read_pipesFile(string pipesFilename);
     void read_stationsFile(string stationsFilename);
     void build();
+
     ~Network(); // para libertar memória
 
     Vertex<T> *findVertex(const string &in) const;
     bool addVertex(const T &in);
     bool addEdge(const string &srcCode, const string &destCode, double w, bool isUnidirectional);
-
     bool removeVertex(const T &in);
-    std::unordered_map<std::string, double> verifyWaterSupply();
 
+
+    unordered_map<std::string, double> verifyWaterSupply();
 
     void verifyWaterCapacity(const string &outputFilename) const;
 

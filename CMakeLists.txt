@@ -15,4 +15,6 @@ add_executable(Projeto1DA
         src/graph/Vertex.cpp
         src/graph/Edge.h
         src/graph/Edge.cpp
+        src/algorithms/Algorithms.h
+        src/algorithms/Algorithms.cpp
 )

@@ -27,7 +27,7 @@ void Menu::run() {
 
 void Menu::mainPage(Network<Info> network) {
     cout << " _____________________________________________ \n"
-            "|                    Main Menu                |\n"
+            "|                 Main Menu                   |\n"
             "                                               \n"
             " > Calculate Max Amount of Water          [1]  \n"
             " > Verify Water Supply                    [2]  \n"
@@ -43,7 +43,7 @@ void Menu::mainPage(Network<Info> network) {
     string cmd;
     getline(cin, cmd);
 
-    while (cmd != "q" && cmd != "1" && cmd != "2" && cmd != "3" && cmd != "4" && cmd != "5") {
+    while (cmd != "q" && cmd != "1" && cmd != "2" && cmd != "3" && cmd != "4" && cmd != "5" && cmd != "6") {
         cout << "ERROR: Choose a valid option \n";
         getline(cin, cmd);
     }
@@ -69,6 +69,10 @@ void Menu::mainPage(Network<Info> network) {
             nextPage();
             pumpingStationImpact(network);
             break;
+        case 6:
+            nextPage();
+            //todo
+            break;
     }
 }
 
@@ -81,7 +85,7 @@ void Menu::maxAmountWater(Network<Info> network) {
             " > For a given city                       [2]  \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -122,7 +126,7 @@ void Menu::maxAmountWater_AllCities(Network<Info> network) {
             " nothing happens                               \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -152,7 +156,7 @@ void Menu::maxAmountWater_OneCity(Network<Info> network, Vertex<Info>* cityVerte
             "  nothing  yet                                 \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -181,7 +185,7 @@ void Menu::insertCityCode(Network<Info> network) {
             " > Type the desired city code                  \n"
             "                                               \n"
             "                 (e.g: C_1)                    \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
 
@@ -253,7 +257,7 @@ void Menu::verifyWaterSupply(Network<Info> network) {
 
     cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -279,7 +283,7 @@ void Menu::reservoirImpact(Network<Info> network) {
             " > All Reservoirs                       [2]    \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -329,7 +333,7 @@ void Menu::specificReservoirImpact(Network<Info> network) {
 
     cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     getline(cin, cmd);
 
@@ -353,7 +357,7 @@ void Menu::allReservoirsImpact(Network<Info> network) {
 
     cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -370,20 +374,18 @@ void Menu::allReservoirsImpact(Network<Info> network) {
 }
 
 
-
-
 // T3.2
 
 void Menu::pumpingStationImpact(Network<Info> network) {
     cout << " _____________________________________________ \n"
             "|        Pumping Station Impact               |\n"
             "                                               \n"
-            " > Not Essential                         [1]  \n"
-            " > Specific Pumping Station             [2]  \n"
-            " > All Pumping Stations                 [3]  \n"
+            " > Not Essential                          [1]  \n"
+            " > Specific Pumping Station               [2]  \n"
+            " > All Pumping Stations                   [3]  \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
-            "                                               \n";
+            " _____________________________________________ \n";
 
     string cmd;
     getline(cin, cmd);
@@ -504,4 +506,17 @@ void Menu::allPumpingStationsImpact(Network<Info> network) {
     }
 
     cout << "_________________________________________________\n";
+}
+
+
+
+
+
+
+void Menu::edmondsKarp(Network<Info> *network, string sourceCode, string targetCode) {
+
+}
+
+void Menu::augmentFlowAlongPath(Vertex<Info> *s, Vertex<Info> *t, double flow) {
+
 }
