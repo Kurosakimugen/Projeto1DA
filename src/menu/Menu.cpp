@@ -513,10 +513,6 @@ void Menu::allPumpingStationsImpact(Network<Info> network) {
 
 
 
-void Menu::edmondsKarp(Network<Info> *network, string sourceCode, string targetCode) {
+//void Menu::edmondsKarp(Network<Info> *network, string sourceCode, string targetCode) {}
 
-}
-
-void Menu::augmentFlowAlongPath(Vertex<Info> *s, Vertex<Info> *t, double flow) {
-
-}
+//void Menu::augmentFlowAlongPath(Vertex<Info> *s, Vertex<Info> *t, double flow) {}
