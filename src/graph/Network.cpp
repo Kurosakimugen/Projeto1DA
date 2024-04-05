@@ -1,14 +1,14 @@
 #include "Network.h"
 
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <unordered_map>
 #include <queue>
 
-template<class T>
-void Network<T>::read_reservoirsFile(string reservoirFilename) {
+
+
+void Network::read_reservoirsFile(string reservoirFilename) {
     ifstream file(reservoirFilename);
 
     if (!file.is_open()) {
@@ -36,7 +36,7 @@ void Network<T>::read_reservoirsFile(string reservoirFilename) {
 
 
             //addVertex(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
-            Vertex<T>* reservoirVertex = new Vertex<T>(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
+            Vertex* reservoirVertex = new Vertex(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
             this->vertexSet.push_back(reservoirVertex);
         }
         else {
@@ -47,8 +47,8 @@ void Network<T>::read_reservoirsFile(string reservoirFilename) {
     file.close();
 }
 
-template<class T>
-void Network<T>::read_citiesFile(string citiesFilename) {
+
+void Network::read_citiesFile(string citiesFilename) {
     ifstream file(citiesFilename);
 
     if (!file.is_open()) {
@@ -81,7 +81,7 @@ void Network<T>::read_citiesFile(string citiesFilename) {
 
 
             //addVertex(Info(City,ID,Code,Demand,Population));
-            Vertex<T>* cityVertex = new Vertex<T>(Info(City,ID,Code,Demand,Population));
+            Vertex* cityVertex = new Vertex(Info(City,ID,Code,Demand,Population));
             this->vertexSet.push_back(cityVertex);
 
         }
@@ -93,8 +93,8 @@ void Network<T>::read_citiesFile(string citiesFilename) {
     file.close();
 }
 
-template<class T>
-void Network<T>::read_stationsFile(string stationsFilename) {
+
+void Network::read_stationsFile(string stationsFilename) {
     ifstream file(stationsFilename);
 
     if (!file.is_open()) {
@@ -116,11 +116,11 @@ void Network<T>::read_stationsFile(string stationsFilename) {
                 int ID = stoi(IdString);
 
                 //addVertex(Info(ID,Code));
-                Vertex<T>* stationVertex = new Vertex<T>(Info(ID,Code));
+                Vertex* stationVertex = new Vertex(Info(ID,Code));
                 this->vertexSet.push_back(stationVertex);
             }
 
-            }
+        }
         else {
             cerr << "Error parsing line: " << line << endl;
         }
@@ -129,8 +129,8 @@ void Network<T>::read_stationsFile(string stationsFilename) {
     file.close();
 }
 
-template<class T>
-void Network<T>::read_pipesFile(string pipesFilename) {
+
+void Network::read_pipesFile(string pipesFilename) {
     ifstream file(pipesFilename);
     if (!file.is_open()) {
         cerr << "Error opening file: " << pipesFilename << endl;
@@ -159,15 +159,15 @@ void Network<T>::read_pipesFile(string pipesFilename) {
     file.close();
 }
 
-template<class T>
-Network<T>::~Network() {
+
+Network::~Network() {
     for (auto* v : vertexSet) {
         delete v;
     }
 }
 
-template<class T>
-void Network<T>::build() {
+
+void Network::build() {
     //calls all reads at once
     //Rever os paths para os ficheiros serem lidos corretamente.
 
@@ -177,28 +177,27 @@ void Network<T>::build() {
     this->read_pipesFile("Dataset/Pipes_Madeira.csv");
 }
 
-template<class T>
-Vertex<T> *Network<T>:: findVertex(const string &in) const {
-    for (Vertex<T> * v : vertexSet){
-        Info vertexInfo = v->getInfo();
-        if (vertexInfo.getCode() == in)
+
+Vertex *Network:: findVertex(const string &in) const {
+
+    for (Vertex * v : vertexSet){
+        //Info vertexInfo = v->getInfo();
+        if (v->getInfo().getCode() == in)
             return v;
     }
 
     return nullptr;
 }
 
-template <class T>
-bool Network<T>::addVertex(const T &in) {
-    Info info = in;
-    if (findVertex(info.getCode()) != nullptr)
+bool Network::addVertex(Info &in) {
+    if (findVertex(in.getCode()) != nullptr)
         return false;
-    vertexSet.push_back(new Vertex<T>(in));
+    vertexSet.push_back(new Vertex(in));
     return true;
 }
 
-template <class T>
-bool Network<T>::addEdge(const string &srcCode, const string &destCode, double w,bool isUniDirectional) {
+
+bool Network::addEdge(const string &srcCode, const string &destCode, double w,bool isUniDirectional) {
 
     auto v1 = findVertex(srcCode);
     auto v2 = findVertex(destCode);
@@ -210,18 +209,18 @@ bool Network<T>::addEdge(const string &srcCode, const string &destCode, double w
 
 
 // T2.2
-template<class T>
-unordered_map<string, double> Network<T>::verifyWaterSupply() {
+
+unordered_map<string, double> Network::verifyWaterSupply() {
     unordered_map<string, double> waterDeficits;
 
-    for (Vertex<T>* cityVertex : vertexSet) {
+    for (Vertex* cityVertex : vertexSet) {
         Info cityInfo = cityVertex->getInfo();
 
         if (cityInfo.getIsCity()) {
             double demand = cityInfo.getdemand();
             double totalCapacity = 0.0;
 
-            for (Edge<T>* edge : cityVertex->getIncoming()) {
+            for (Edge* edge : cityVertex->getIncoming()) {
                 totalCapacity += edge->getWeight();
             }
 
@@ -240,9 +239,9 @@ unordered_map<string, double> Network<T>::verifyWaterSupply() {
 
 // T3.1
 
-template<class T>
-std::vector<std::string> Network<T>::removeReservoir(const std::string& reservoirCode) {
-    Vertex<T>* reservoirVertex = findVertex(reservoirCode);
+
+std::vector<std::string> Network::removeReservoir(const std::string& reservoirCode) {
+    Vertex* reservoirVertex = findVertex(reservoirCode);
     if (reservoirVertex == nullptr) {
         std::cerr << "Reservoir with code " << reservoirCode << " not found!" << std::endl;
         return std::vector<std::string>();
@@ -250,7 +249,7 @@ std::vector<std::string> Network<T>::removeReservoir(const std::string& reservoi
 
     std::vector<std::string> affectedDeliverySites;
 
-    for (Vertex<T>* deliverySiteVertex : vertexSet) {
+    for (Vertex* deliverySiteVertex : vertexSet) {
         if (deliverySiteVertex != reservoirVertex) {
             deliverySiteVertex->removeEdge(reservoirCode);
 
@@ -266,9 +265,9 @@ std::vector<std::string> Network<T>::removeReservoir(const std::string& reservoi
 }
 
 
-template<class T>
-bool Network<T>::checkDeliveryCapacity(const T& info) const {
-    Vertex<T>* currentVertex = findVertex(info.getCode());
+
+bool Network::checkDeliveryCapacity(Info info) const {
+    Vertex* currentVertex = findVertex(info.getCode());
     if (currentVertex != nullptr) {
         if (currentVertex->getInfo().getIsWaterReservour()) {
             double capacity = currentVertex->getInfo().getCapacity();
@@ -289,11 +288,11 @@ bool Network<T>::checkDeliveryCapacity(const T& info) const {
 
 
 // T3.2 - Lidar com a remoção de uma estação de bombeamento específica
-template<class T>
-void Network<T>::removePumpingStation(const string &stationCode) {
+
+void Network::removePumpingStation(const string &stationCode) {
     auto it = vertexSet.begin();
     while (it != vertexSet.end()) {
-        Vertex<T> *vertex = *it;
+        Vertex *vertex = *it;
         Info vertexInfo = vertex->getInfo();
         if (vertexInfo.getCode() == stationCode && vertexInfo.getIsCity() == false) {
             vertex->removeOutgoingEdges();
@@ -306,12 +305,12 @@ void Network<T>::removePumpingStation(const string &stationCode) {
     cerr << "Pumping station with code " << stationCode << " not found or is not a pumping station." << endl;
 }
 
-template<class T>
-void Network<T>::checkImpactOfRemovingPumpingStation(const string &stationCode) {
+
+void Network::checkImpactOfRemovingPumpingStation(const string &stationCode) {
     removePumpingStation(stationCode);
 
     vector<string> affectedCities;
-    for (Vertex<T> *cityVertex : vertexSet) {
+    for (Vertex *cityVertex : vertexSet) {
         Info cityInfo = cityVertex->getInfo();
         if (cityInfo.getIsCity()) {
             double citySupplyDeficit = 0.0;
@@ -337,15 +336,15 @@ void Network<T>::checkImpactOfRemovingPumpingStation(const string &stationCode) 
 }
 
 // T3.2 - Lidar com o impacto de todas as estações de bombeamento
-template<class T>
-void Network<T>::checkImpactOfAllPumpingStations() {
+
+void Network::checkImpactOfAllPumpingStations() {
     vector<string> affectedCities;
-    for (Vertex<T> *pumpingStationVertex : vertexSet) {
+    for (Vertex *pumpingStationVertex : vertexSet) {
         Info stationInfo = pumpingStationVertex->getInfo();
         if (!stationInfo.getIsCity()) {
             string stationCode = stationInfo.getCode();
             removePumpingStation(stationCode);
-            for (Vertex<T> *cityVertex : vertexSet) {
+            for (Vertex *cityVertex : vertexSet) {
                 Info cityInfo = cityVertex->getInfo();
                 if (cityInfo.getIsCity() && cityVertex->getAdj().empty()) {
                     double citySupplyDeficit = cityInfo.getdemand();
@@ -366,26 +365,26 @@ void Network<T>::checkImpactOfAllPumpingStations() {
     }
 }
 
-template<class T>
-unordered_map<string, Vertex<T>*> Network<T>::getVertices() const {
-    unordered_map<string, Vertex<T>*> vertices;
-    for (Vertex<T>* vertex : vertexSet) {
+
+unordered_map<string, Vertex*> Network::getVertices() const {
+    unordered_map<string, Vertex*> vertices;
+    for (Vertex* vertex : vertexSet) {
         Info info = vertex->getInfo();
         vertices[info.getCode()] = vertex;
     }
     return vertices;
 }
 
-template<class T>
-unordered_map<string, double> Network<T>::pumpingStationImpact(const Info& pumpingStationInfo) const {
+
+unordered_map<string, double> Network::pumpingStationImpact(const Info& pumpingStationInfo) const {
     unordered_map<string, double> impact;
-    Vertex<T>* pumpingStationVertex = findVertex(pumpingStationInfo.getCode());
+    Vertex* pumpingStationVertex = findVertex(pumpingStationInfo.getCode());
     if (pumpingStationVertex == nullptr) {
         cerr << "Pumping station not found!" << endl;
         return impact;
     }
-    for (Edge<T>* edge : pumpingStationVertex->getIncoming()) {
-        Vertex<T>* cityVertex = edge->getOrig();
+    for (Edge* edge : pumpingStationVertex->getIncoming()) {
+        Vertex* cityVertex = edge->getOrig();
         Info cityInfo = cityVertex->getInfo();
         double deficit = cityInfo.getdemand() - edge->getWeight();
         if (deficit > 0) {
@@ -395,16 +394,16 @@ unordered_map<string, double> Network<T>::pumpingStationImpact(const Info& pumpi
     return impact;
 }
 
-template<class T>
-unordered_map<string, double> Network<T>::allPumpingStationsImpact() const {
+
+unordered_map<string, double> Network::allPumpingStationsImpact() const {
     unordered_map<string, double> impact;
-    for (Vertex<T>* vertex : vertexSet) {
+    for (Vertex* vertex : vertexSet) {
         Info info = vertex->getInfo();
         if (!info.getIsCity()) {
             continue;
         }
         double totalSupply = 0;
-        for (Edge<T>* edge : vertex->getIncoming()) {
+        for (Edge* edge : vertex->getIncoming()) {
             totalSupply += edge->getWeight();
         }
         if (totalSupply < info.getdemand()) {

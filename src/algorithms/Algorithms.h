@@ -9,11 +9,11 @@
 
 /*Edmonds karp*/
 
-//void edmondsKarp(Network<Info> *network, string sourceCode, string targetCode);
-//void augmentFlowAlongPath(Vertex<Info> *s, Vertex<Info> *t, double flow);
-//double findMinResidualAlongPath(Vertex<Info> *s, Vertex<Info> *t);
-//bool findAugmentingPath(Network<Info> *network, Vertex<Info> *s, Vertex<Info> *t);
-//void testAndVisit(std::queue< Vertex<Info>*> &q, Edge<Info> *e, Vertex<Info> *w, double residual);
+//void edmondsKarp(Network *network, string sourceCode, string targetCode);
+//void augmentFlowAlongPath(Vertex *s, Vertex *t, double flow);
+//double findMinResidualAlongPath(Vertex *s, Vertex *t);
+//bool findAugmentingPath(Network *network, Vertex *s, Vertex *t);
+//void testAndVisit(std::queue< Vertex*> &q, Edge *e, Vertex *w, double residual);
 
 /*----------------*/
 

@@ -1,14 +1,14 @@
 #include "Vertex.h"
+#include "Edge.h"
 
-template <class T>
-Vertex<T>::Vertex(T in): info(in) {}
+Vertex::Vertex(Info in): info(in) {}
 /**
  * Auxiliary function to add an outgoing edge to a vertex (this),
  * with a given destination vertex (d) and edge weight (w).
  */
-template <class T>
-Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w, bool isUnidirectional ) {
-    auto newEdge = new Edge<T>(this, d, w, isUnidirectional);
+
+Edge * Vertex::addEdge(Vertex *d, double w, bool isUnidirectional ) {
+    auto newEdge = new Edge(this, d, w, isUnidirectional);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -19,13 +19,13 @@ Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w, bool isUnidirectional ) {
  * from a vertex (this).
  * Returns true if successful, and false if such edge does not exist.
  */
-template <class T>
-bool Vertex<T>::removeEdge(string infoCode) {
+
+bool Vertex::removeEdge(string infoCode) {
     bool removedEdge = false;
     auto it = adj.begin();
     while (it != adj.end()) {
-        Edge<T> *edge = *it;
-        Vertex<T> *dest = edge->getDest();
+        Edge *edge = *it;
+        Vertex *dest = edge->getDest();
         Info destInfo = dest->getInfo();
         if (destInfo.getCode() == infoCode) {
             it = adj.erase(it);
@@ -42,94 +42,88 @@ bool Vertex<T>::removeEdge(string infoCode) {
 /**
  * Auxiliary function to remove an outgoing edge of a vertex.
  */
-template <class T>
-void Vertex<T>::removeOutgoingEdges() {
+void Vertex::removeOutgoingEdges() {
     auto it = adj.begin();
     while (it != adj.end()) {
-        Edge<T> *edge = *it;
+        Edge*edge = *it;
         it = adj.erase(it);
         deleteEdge(edge);
     }
 }
 
-template <class T>
-bool Vertex<T>::operator<(Vertex<T> & vertex) const {
+bool Vertex::operator<(Vertex & vertex) const {
     return this->dist < vertex.dist;
 }
 
-template <class T>
-T Vertex<T>::getInfo() const {
+
+Info Vertex::getInfo() const {
     return this->info;
 }
 
-template <class T>
-std::vector<Edge<T>*> Vertex<T>::getAdj() const {
+std::vector<Edge*> Vertex::getAdj() const {
     return this->adj;
 }
 
 //Parte do visited
-template <class T>
-bool Vertex<T>::isVisited() const {
+
+bool Vertex::isVisited() const {
     return this->visited;
 }
-template <class T>
-void Vertex<T>::setVisited(bool visited) {
+
+void Vertex::setVisited(bool visited) {
     this->visited = visited;
 }
 
 //Parte do processing
-template <class T>
-bool Vertex<T>::isProcessing() const {
+
+bool Vertex::isProcessing() const {
     return this->processing;
 }
-template <class T>
-void Vertex<T>::setProcessing(bool processing) {
+
+void Vertex::setProcessing(bool processing) {
     this->processing = processing;
 }
 
 //Parte do indegree
-template <class T>
-unsigned int Vertex<T>::getIndegree() const {
+
+unsigned int Vertex::getIndegree() const {
     return this->indegree;
 }
-template <class T>
-void Vertex<T>::setIndegree(unsigned int indegree) {
+
+void Vertex::setIndegree(unsigned int indegree) {
     this->indegree = indegree;
 }
 
 //Parte do dist
-template <class T>
-double Vertex<T>::getDist() const {
+
+double Vertex::getDist() const {
     return this->dist;
 }
-template <class T>
-void Vertex<T>::setDist(double dist) {
+
+void Vertex::setDist(double dist) {
     this->dist = dist;
 }
 
 //Parte do path
-template <class T>
-Edge<T> *Vertex<T>::getPath() const {
+Edge *Vertex::getPath() const {
     return this->path;
 }
-template <class T>
-void Vertex<T>::setPath(Edge<T> *path) {
+
+void Vertex::setPath(Edge *path) {
     this->path = path;
 }
 
-template <class T>
-std::vector<Edge<T> *> Vertex<T>::getIncoming() const {
+
+std::vector<Edge *> Vertex::getIncoming() const {
     return this->incoming;
 }
 
-template <class T>
-void Vertex<T>::setInfo(T in) {
+void Vertex::setInfo(Info in) {
     this->info = in;
 }
 
-template <class T>
-void Vertex<T>::deleteEdge(Edge<T> *edge) {
-    Vertex<T> *dest = edge->getDest();
+void Vertex::deleteEdge(Edge *edge) {
+    Vertex *dest = edge->getDest();
     // Remove the corresponding edge from the incoming list
 
     auto it = dest->incoming.begin();
@@ -146,4 +140,3 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
     delete edge;
 
 }
-template class Vertex<Info>;

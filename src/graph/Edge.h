@@ -3,12 +3,11 @@
 
 
 #include "Info.h"
+#include "Vertex.h"
 
-template <class T> class Vertex;
-template <class T>
-class Edge {
+
+class Edge{
 public:
-    //Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
 
     /**
      * Edge Constructor
@@ -17,14 +16,14 @@ public:
      * @param weight
      * @param isUnidirectional
      */
-    Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isUnidirectional);
+    Edge(Vertex* orig, Vertex* dest, double weight, bool isUnidirectional);
 
 
     /**
      * Function to get the destination vertex
      * @return Node destination vertex
      */
-    Vertex<T> *getDest() const;
+    Vertex *getDest() const;
 
     /**
      * Function to get the value of weight
@@ -36,7 +35,7 @@ public:
      * Function to get the origin vertex
      * @return Node of origin
      */
-    Vertex<T> *getOrig() const;
+    Vertex *getOrig() const;
 
     //Parte do Selected
     /**
@@ -56,13 +55,13 @@ public:
      * Function to get the same Edge but with the origin and destination reverted
      * @return Reverted Edge
      */
-    Edge<T> *getReverse() const;
+    Edge *getReverse() const;
 
     /**
      * Function to create the same with edges but with nodes reversed
      * @param reverse
      */
-    void setReverse(Edge<T> *reverse);
+    void setReverse(Edge *reverse);
 
     //Parte do Flow
     /**
@@ -77,15 +76,15 @@ public:
      */
     void setFlow(double flow);
 protected:
-    Vertex<T> *dest; // destination vertex
+    Vertex *dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
 
     // auxiliary fields
     bool selected = false;
 
     // used for bidirectional edges
-    Vertex<T> *orig;
-    Edge<T> *reverse = nullptr;
+    Vertex *orig;
+    Edge *reverse = nullptr;
 
     double flow; // for flow-related problems
     bool isUnidirectional;

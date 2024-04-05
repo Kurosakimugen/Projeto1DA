@@ -1,33 +1,30 @@
 #ifndef PROJETO1DA_VERTEX_H
 #define PROJETO1DA_VERTEX_H
 
-
 #include <vector>
 #include "Info.h"
-#include "Edge.h"
 
-template <class T> class Edge;
-template <class T>
+class Edge;
 class Vertex {
 public:
     /**
      * Vertex Constructor
      * @param inf
      */
-    Vertex(T inf);
-    bool operator<(Vertex<T>& vertex) const; // // required by MutablePriorityQueue
+    Vertex(Info inf);
+    bool operator<(Vertex& vertex) const; // // required by MutablePriorityQueue
 
     /**
      * Function to get the info of a vertex
      * @return info value
      */
-    T getInfo() const;
+    Info getInfo() const;
 
     /**
      * Function to get the list of all edges from that vertex
      * @return list of edges
      */
-    std::vector<Edge<T>*> getAdj() const;
+    std::vector<Edge*> getAdj() const;
 
     //Parte do visited
     /**
@@ -86,25 +83,25 @@ public:
      * Function to get the path of a vertex
      * @return path
      */
-    Edge<T> *getPath() const;
+    Edge *getPath() const;
 
     /**
      * Function to set the value of a path
      * @param path
      */
-    void setPath(Edge<T> *path);
+    void setPath(Edge *path);
 
     /**
      * Function to get all incoming edges with x vertex being the destination
      * @return list of edges
      */
-    std::vector<Edge<T> *> getIncoming() const;
+    std::vector<Edge *> getIncoming() const;
 
     /**
      * Function to set info
      * @param info
      */
-    void setInfo(T info);
+    void setInfo(Info info);
 
     /**
      * Function to add an edge into a vertex
@@ -113,7 +110,7 @@ public:
      * @param isUnidirectional
      * @return
      */
-    Edge<T> * addEdge(Vertex<T> *dest, double w, bool isUnidirectional);
+    Edge * addEdge(Vertex *dest, double w, bool isUnidirectional);
 
     /**
      * Function to remove a certain edge for all the edges
@@ -128,8 +125,8 @@ public:
     void removeOutgoingEdges();
 
 protected:
-    T info;                // info node
-    std::vector<Edge<T> *> adj;  // outgoing edges
+    Info info;                // info node
+    std::vector<Edge *> adj;  // outgoing edges
 
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
@@ -137,12 +134,12 @@ protected:
     unsigned int indegree = 0; // used by topsort
     double dist = 0;
 
-    Edge<T> *path = nullptr;
+    Edge *path = nullptr;
 
-    std::vector<Edge<T> *> incoming; // incoming edges
+    std::vector<Edge *> incoming; // incoming edges
 
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
-    void deleteEdge(Edge<T> *edge);
+    void deleteEdge(Edge *edge);
 };
 #endif //PROJETO1DA_VERTEX_H

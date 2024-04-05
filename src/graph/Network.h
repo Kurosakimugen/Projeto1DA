@@ -3,16 +3,16 @@
 
 #include <string>
 #include <vector>
-#include "Vertex.h"
+//#include "Vertex.h"
 #include "Edge.h"
-#include "Info.h"
+//#include "Info.h"
 #include <unordered_map>
 
 using namespace std;
-template <class T>
+
 class Network {
 private:
-    vector<Vertex<T> *> vertexSet;
+    vector<Vertex *> vertexSet;
     //vector<Edge<T>*> edgeSet;
     //unordered_map<string, Vertex<T>*> vertexMap;
 
@@ -57,14 +57,14 @@ public:
      * @param in
      * @return vertex
      */
-    Vertex<T> *findVertex(const string &in) const;
+    Vertex *findVertex(const string &in) const;
 
     /**
      * Function to create a vertex
      * @param in
      * @return true if sucessful or false otherwise
      */
-    bool addVertex(const T &in);
+    bool addVertex(Info &in);
 
     /**
      * Function to add an Edge
@@ -81,8 +81,7 @@ public:
      * @param in
      * @return true if sucessful or false otherwise
      */
-    bool removeVertex(const T &in);
-
+    bool removeVertex(Info &in);
 
     /**
      * Function to verify the water suplies
@@ -108,7 +107,7 @@ public:
      * @param info
      * @return true if sucessful or false otherwise
      */
-    bool checkDeliveryCapacity(const T &info) const;
+    bool checkDeliveryCapacity(Info info) const;
 
     /**
      * Function to remove a pumping station
@@ -131,7 +130,7 @@ public:
      * Function to get all nodes
      * @return list of nodes
      */
-    unordered_map<string, Vertex<T> *> getVertices() const;
+    unordered_map<string, Vertex *> getVertices() const;
 
     /**
      * Function to check the impact of some pumping station on the system

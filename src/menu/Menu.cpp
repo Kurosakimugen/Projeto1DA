@@ -1,7 +1,5 @@
 #include "Menu.h"
-
-
-#include "../graph/Network.cpp"
+//#include "../graph/Network.cpp"
 #include <iostream>
 
 
@@ -18,14 +16,14 @@ void Menu::quit() {
 
 void Menu::run() {
 
-    Network<Info> network;
+    Network network;
     network.build();
 
     mainPage(network);
 }
 
 
-void Menu::mainPage(Network<Info> network) {
+void Menu::mainPage(Network network) {
     cout << " _____________________________________________ \n"
             "|                 Main Menu                   |\n"
             "                                               \n"
@@ -77,7 +75,7 @@ void Menu::mainPage(Network<Info> network) {
 }
 
 // T2.1
-void Menu::maxAmountWater(Network<Info> network) {
+void Menu::maxAmountWater(Network network) {
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
             "                                               \n"
@@ -117,7 +115,7 @@ void Menu::maxAmountWater(Network<Info> network) {
 }
 
 // T2.1
-void Menu::maxAmountWater_AllCities(Network<Info> network) {
+void Menu::maxAmountWater_AllCities(Network network) {
     //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA TDS AS CITIES E DAR PRINT
 
     cout << " _____________________________________________ \n"
@@ -147,7 +145,7 @@ void Menu::maxAmountWater_AllCities(Network<Info> network) {
 }
 
 // T2.1
-void Menu::maxAmountWater_OneCity(Network<Info> network, Vertex<Info>* cityVertex) {
+void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
     //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA UMA CITY E DAR PRINT
 
     cout << " _____________________________________________ \n"
@@ -178,7 +176,7 @@ void Menu::maxAmountWater_OneCity(Network<Info> network, Vertex<Info>* cityVerte
 }
 
 // T2.1
-void Menu::insertCityCode(Network<Info> network) {
+void Menu::insertCityCode(Network network) {
     cout << " _____________________________________________ \n"
             "|               Insert City Code              |\n"
             "                                               \n"
@@ -190,7 +188,7 @@ void Menu::insertCityCode(Network<Info> network) {
     string cmd;
 
     getline(cin, cmd);
-    Vertex<Info>* cityVertex = network.findVertex(cmd);
+    Vertex* cityVertex = network.findVertex(cmd);
 
 
     if(cityVertex == nullptr){
@@ -239,7 +237,7 @@ void Menu::insertCityCode(Network<Info> network) {
 
 
 // T2.2
-void Menu::verifyWaterSupply(Network<Info> network) {
+void Menu::verifyWaterSupply(Network network) {
     cout << " _____________________________________________ \n"
             "|        Verify Water Supply                    |\n"
             "                                               \n";
@@ -275,7 +273,7 @@ void Menu::verifyWaterSupply(Network<Info> network) {
 
 
 // T3.1
-void Menu::reservoirImpact(Network<Info> network) {
+void Menu::reservoirImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|             Reservoir Impact                 |\n"
             "                                               \n"
@@ -313,7 +311,7 @@ void Menu::reservoirImpact(Network<Info> network) {
     }
 }
 
-void Menu::specificReservoirImpact(Network<Info> network) {
+void Menu::specificReservoirImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|          Specific Reservoir Impact           |\n"
             "                                               \n"
@@ -348,7 +346,7 @@ void Menu::specificReservoirImpact(Network<Info> network) {
     reservoirImpact(network);
 }
 
-void Menu::allReservoirsImpact(Network<Info> network) {
+void Menu::allReservoirsImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|             All Reservoirs Impact            |\n"
             "                                               \n";
@@ -376,7 +374,7 @@ void Menu::allReservoirsImpact(Network<Info> network) {
 
 // T3.2
 
-void Menu::pumpingStationImpact(Network<Info> network) {
+void Menu::pumpingStationImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|        Pumping Station Impact               |\n"
             "                                               \n"
@@ -420,7 +418,7 @@ void Menu::pumpingStationImpact(Network<Info> network) {
 
 }
 
-void Menu::notEssentialPumpingStation(Network<Info> network) {
+void Menu::notEssentialPumpingStation(Network network) {
     cout << " _____________________________________________ \n"
             "|          Not Essential Pumping Station      |\n"
             "                                               \n";
@@ -437,7 +435,7 @@ void Menu::notEssentialPumpingStation(Network<Info> network) {
     string pumpingStationCode;
     getline(cin, pumpingStationCode);
 
-    Vertex<Info>* pumpingStationVertex = network.findVertex(pumpingStationCode);
+    Vertex* pumpingStationVertex = network.findVertex(pumpingStationCode);
 
     if (pumpingStationVertex == nullptr || pumpingStationVertex->getInfo().getIsCity()) {
         cout << "Invalid pumping station code.\n";
@@ -457,7 +455,7 @@ void Menu::notEssentialPumpingStation(Network<Info> network) {
     cout << "_________________________________________________\n";
 }
 
-void Menu::specificPumpingStationImpact(Network<Info> network) {
+void Menu::specificPumpingStationImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|       Specific Pumping Station Impact       |\n"
             "                                               \n";
@@ -474,7 +472,7 @@ void Menu::specificPumpingStationImpact(Network<Info> network) {
     string pumpingStationCode;
     getline(cin, pumpingStationCode);
 
-    Vertex<Info>* pumpingStationVertex = network.findVertex(pumpingStationCode);
+    Vertex* pumpingStationVertex = network.findVertex(pumpingStationCode);
 
     if (pumpingStationVertex == nullptr || pumpingStationVertex->getInfo().getIsCity()) {
         cout << "Invalid pumping station code.\n";
@@ -493,7 +491,7 @@ void Menu::specificPumpingStationImpact(Network<Info> network) {
     cout << "_________________________________________________\n";
 }
 
-void Menu::allPumpingStationsImpact(Network<Info> network) {
+void Menu::allPumpingStationsImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|          All Pumping Stations Impact         |\n"
             "                                               \n";
@@ -513,6 +511,6 @@ void Menu::allPumpingStationsImpact(Network<Info> network) {
 
 
 
-//void Menu::edmondsKarp(Network<Info> *network, string sourceCode, string targetCode) {}
+//void Menu::edmondsKarp(Network *network, string sourceCode, string targetCode) {}
 
-//void Menu::augmentFlowAlongPath(Vertex<Info> *s, Vertex<Info> *t, double flow) {}
+//void Menu::augmentFlowAlongPath(Vertex *s, Vertex *t, double flow) {}
