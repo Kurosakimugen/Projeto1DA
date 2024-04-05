@@ -7,8 +7,8 @@ Vertex<T>::Vertex(T in): info(in) {}
  * with a given destination vertex (d) and edge weight (w).
  */
 template <class T>
-Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
-    auto newEdge = new Edge<T>(this, d, w, true);
+Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w, bool isUnidirectional ) {
+    auto newEdge = new Edge<T>(this, d, w, isUnidirectional);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -20,13 +20,14 @@ Edge<T> * Vertex<T>::addEdge(Vertex<T> *d, double w) {
  * Returns true if successful, and false if such edge does not exist.
  */
 template <class T>
-bool Vertex<T>::removeEdge(T in) {
-   /* bool removedEdge = false;
+bool Vertex<T>::removeEdge(string infoCode) {
+    bool removedEdge = false;
     auto it = adj.begin();
     while (it != adj.end()) {
         Edge<T> *edge = *it;
         Vertex<T> *dest = edge->getDest();
-        if (dest->getInfo() == in) {
+        Info destInfo = dest->getInfo();
+        if (destInfo.getCode() == infoCode) {
             it = adj.erase(it);
             deleteEdge(edge);
             removedEdge = true; // allows for multiple edges to connect the same pair of vertices (multigraph)
@@ -36,7 +37,6 @@ bool Vertex<T>::removeEdge(T in) {
         }
     }
     return removedEdge;
-    */
 }
 
 /**
@@ -129,10 +129,13 @@ void Vertex<T>::setInfo(T in) {
 
 template <class T>
 void Vertex<T>::deleteEdge(Edge<T> *edge) {
-   /* Vertex<T> *dest = edge->getDest();
+    Vertex<T> *dest = edge->getDest();
     // Remove the corresponding edge from the incoming list
+
     auto it = dest->incoming.begin();
+
     while (it != dest->incoming.end()) {
+
         if ((*it)->getOrig()->getInfo() == info) {
             it = dest->incoming.erase(it);
         }
@@ -141,6 +144,6 @@ void Vertex<T>::deleteEdge(Edge<T> *edge) {
         }
     }
     delete edge;
-    */
+
 }
 template class Vertex<Info>;

@@ -1,7 +1,7 @@
 #include "Edge.h"
 
 template <class T>
-Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isDirected): orig(orig), dest(dest), weight(weight), isDirected(isDirected) {}
+Edge<T>::Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isUnidirectional): orig(orig), dest(dest), weight(weight), isUnidirectional(isUnidirectional) {}
 
 template <class T>
 Vertex<T> * Edge<T>::getDest() const {

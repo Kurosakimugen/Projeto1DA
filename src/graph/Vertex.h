@@ -10,7 +10,7 @@ template <class T> class Edge;
 template <class T>
 class Vertex {
 public:
-    Vertex(T inf);//not sure
+    Vertex(T inf);
     bool operator<(Vertex<T>& vertex) const; // // required by MutablePriorityQueue
 
     T getInfo() const;
@@ -38,8 +38,8 @@ public:
 
     std::vector<Edge<T> *> getIncoming() const;
     void setInfo(T info);
-    Edge<T> * addEdge(Vertex<T> *dest, double w);
-    bool removeEdge(T in);
+    Edge<T> * addEdge(Vertex<T> *dest, double w, bool isUnidirectional);
+    bool removeEdge(string infoCode);
     void removeOutgoingEdges();
 
 protected:
@@ -49,7 +49,7 @@ protected:
     // auxiliary fields
     bool visited = false; // used by DFS, BFS, Prim ...
     bool processing = false; // used by isDAG (in addition to the visited attribute)
-    unsigned int indegree; // used by topsort
+    unsigned int indegree = 0; // used by topsort
     double dist = 0;
 
     Edge<T> *path = nullptr;

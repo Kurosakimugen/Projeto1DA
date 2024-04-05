@@ -31,9 +31,10 @@ void Network<T>::read_reservoirsFile(string reservoirFilename) {
 
             int ID = stoi(IdString);
 
-            Vertex<T>* reservoirVertex = new Vertex<T>(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
 
-            //addVertex(reservoirVertex);
+
+            //addVertex(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
+            Vertex<T>* reservoirVertex = new Vertex<T>(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
             this->vertexSet.push_back(reservoirVertex);
         }
         else {
@@ -76,6 +77,8 @@ void Network<T>::read_citiesFile(string citiesFilename) {
             int ID = stoi(IdString);
             double Demand = stod(DemandString);
 
+
+            //addVertex(Info(City,ID,Code,Demand,Population));
             Vertex<T>* cityVertex = new Vertex<T>(Info(City,ID,Code,Demand,Population));
             this->vertexSet.push_back(cityVertex);
 
@@ -109,7 +112,9 @@ void Network<T>::read_stationsFile(string stationsFilename) {
 
             if(IdString != ""){  //todo- ta aqui um if pq o documento csv acaba com ,,, probs o doc final n tem
                 int ID = stoi(IdString);
-                Vertex<T>* stationVertex = new Vertex<T>(Info(ID,Code)); //TODO
+
+                //addVertex(Info(ID,Code));
+                Vertex<T>* stationVertex = new Vertex<T>(Info(ID,Code));
                 this->vertexSet.push_back(stationVertex);
             }
 
@@ -119,9 +124,7 @@ void Network<T>::read_stationsFile(string stationsFilename) {
         }
     }
 
-
     file.close();
-
 }
 
 template<class T>
@@ -145,13 +148,11 @@ void Network<T>::read_pipesFile(string pipesFilename) {
             continue;
         }
 
-        Vertex<T>* src = vertexMap[servicePointA];
-        Vertex<T>* dest = vertexMap[servicePointB];
         double capacity = stod(capacityString);
-        bool isDirected = direction == "1";
+        bool isUnidirectional = direction == "1";
 
-        Edge<T>* newEdge = new Edge<T>(src, dest, capacity, isDirected);
-        edgeSet.push_back(newEdge);
+        addEdge(servicePointA,servicePointB,capacity, isUnidirectional);
+
     }
     file.close();
 }
@@ -161,9 +162,6 @@ Network<T>::~Network() {
     for (auto* v : vertexSet) {
         delete v;
     }
-    for (auto* e : edgeSet) {
-        delete e;
-    }
 }
 
 template<class T>
@@ -171,37 +169,40 @@ void Network<T>::build() {
     //calls all reads at once
     //Rever os paths para os ficheiros serem lidos corretamente.
 
-
     this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
     this->read_citiesFile("Dataset/Cities_Madeira.csv");
     this->read_stationsFile("Dataset/Stations_Madeira.csv");
     this->read_pipesFile("Dataset/Pipes_Madeira.csv");
 }
 
-
 template<class T>
-Vertex<T> *Network<T>::findVertex(const T &in) const {
-    for (auto v : vertexSet)
-        if (v->getInfo() == in)
+Vertex<T> *Network<T>:: findVertex(const string &in) const {
+    for (Vertex<T> * v : vertexSet){
+        Info vertexInfo = v->getInfo();
+        if (vertexInfo.getCode() == in)
             return v;
+    }
+
     return nullptr;
 }
 
 template <class T>
 bool Network<T>::addVertex(const T &in) {
-    if (findVertex(in) != nullptr)
+    Info info = in;
+    if (findVertex(info.getCode()) != nullptr)
         return false;
     vertexSet.push_back(new Vertex<T>(in));
     return true;
 }
 
 template <class T>
-bool Network<T>::addEdge(const T &sourc, const T &dest, double w) {
-    auto v1 = findVertex(sourc);
-    auto v2 = findVertex(dest);
+bool Network<T>::addEdge(const string &srcCode, const string &destCode, double w,bool isUniDirectional) {
+
+    auto v1 = findVertex(srcCode);
+    auto v2 = findVertex(destCode);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    v1->addEdge(v2, w);
+    v1->addEdge(v2, w, isUniDirectional);
     return true;
 }
 

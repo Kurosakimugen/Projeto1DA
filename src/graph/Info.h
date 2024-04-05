@@ -96,6 +96,10 @@ public:
      * @param nPopulation
      */
     void setPopulation(double nPopulation);
+
+    bool operator==(const Info& other) const;
+
+    bool getIsCity();
 };
 
 

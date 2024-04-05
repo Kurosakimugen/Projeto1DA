@@ -9,7 +9,7 @@ template <class T>
 class Edge {
 public:
     //Edge(Vertex<T> *orig, Vertex<T> *dest, double w);
-    Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isDirected);
+    Edge(Vertex<T> *orig, Vertex<T> *dest, double weight, bool isUnidirectional);
 
 
     Vertex<T> *getDest() const;
@@ -39,7 +39,7 @@ protected:
     Edge<T> *reverse = nullptr;
 
     double flow; // for flow-related problems
-    bool isDirected;
+    bool isUnidirectional;
 };
 
 #endif // EDGE_H

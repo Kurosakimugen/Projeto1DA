@@ -13,9 +13,8 @@ template <class T>
 class Network {
 private:
     vector<Vertex<T> *> vertexSet;
-    vector<Edge<T>*> edgeSet;
-    unordered_map<string, Vertex<T>*> vertexMap;
-
+    //vector<Edge<T>*> edgeSet;
+    //unordered_map<string, Vertex<T>*> vertexMap;
 
 public:
 
@@ -26,9 +25,9 @@ public:
     void build();
     ~Network(); // para libertar memória
 
-    Vertex<T> *findVertex(const T &in) const;
+    Vertex<T> *findVertex(const string &in) const;
     bool addVertex(const T &in);
-    bool addEdge(const T &sourc, const T &dest, double w);
+    bool addEdge(const string &srcCode, const string &destCode, double w, bool isUnidirectional);
 
     bool removeVertex(const T &in);
 

@@ -20,6 +20,11 @@ Info::Info(string name, string municipality, int id, string code, double maximum
     this->id = id;
     this->maximumDelivery = maximumDelivery;
 
+    //default
+    this->population = 0;
+    this->capacity = 0.0;
+    this->demand = 0.0;
+
 }
 
 Info::Info(string name,int id, string code, double demand, int population) {
@@ -29,12 +34,31 @@ Info::Info(string name,int id, string code, double demand, int population) {
     this->code = code;
     this->demand = demand;
     this->population = population;
+
+    //default
+    this->municipality = "";
+    this->maximumDelivery = 0.0;
+    this->capacity = 0.0;
 }
 
 Info::Info(int id, string code) {
     this->id = id;
     this->code = code;
+
+    //default
+    this->name = "";
+    this->municipality = "";
+    this->population = 0;
+    this->maximumDelivery = 0.0;
+    this->capacity = 0.0;
+    this->demand = 0.0;
 }
+
+bool Info::operator==(const Info& other) const {
+    return this->code == other.code;
+    //return (this->code == other.code && this->name == other.name && this->municipality == other.municipality && this->municipality == other.municipality &&this->municipality == other.municipality &&this->municipality == other.municipality &&this->municipality == other.municipality && ) ;
+}
+
 
 double Info::getCapacity() {
     return capacity;
@@ -66,4 +90,8 @@ void Info::setName(std::string nName) {
 
 void Info::setPopulation(double nPopulation) {
     population = nPopulation;
+}
+
+bool Info::getIsCity() {
+    return isCity;
 }

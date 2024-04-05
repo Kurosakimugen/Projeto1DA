@@ -10,11 +10,16 @@ class Menu {
 
 public:
     void run();
-    void parseCSVFiles(Network<Info> &network);
-    //void read_reservoirsFile(Network<Info> &network, string reservoirFilename);
+
+    void mainPage(Network<Info> network);
+
+    void maxAmountWater(Network<Info> network);
+    void maxAmountWater_AllCities(Network<Info> network);
+    void maxAmountWater_OneCity(Network<Info> network, Vertex<Info>* CityVertex);
+
+    void insertCityCode(Network<Info> network);
 
 
-    void mainPage();
 
 };
 
