@@ -16,6 +16,7 @@ private:
 
     double maximumDelivery;
     double capacity;
+    double demand;
 
     // the appropriate one is set to true when reading, the rest stays false
     bool isWaterReservour = false;
@@ -24,11 +25,12 @@ private:
 
 public:
     /**
-     * @brief Construtor default
+     * @brief Default Constructor
      */
     Info();
+
     /**
-     * @brief Construtor utilizado para Water Resevoirs
+     * @brief Water Resevoirs Constructor
      * @param name
      * @param municipality
      * @param id
@@ -36,8 +38,9 @@ public:
      * @param maximumDelivery
      */
     Info(string name,string municipality,int id,string code, double maximumDelivery);
+
     /**
-     * @brief Construtor para Cities
+     * @brief City Constructor
      * @param name
      * @param id
      * @param code
@@ -45,63 +48,86 @@ public:
      * @param population
      */
     Info(string name,int id,string code,double demand, int population);
+
     /**
-     * @brief Construtor para Delivery Stations
+     * @brief Delivery Stations Constructor
      * @param id
      * @param code
      */
     Info(int id, string code); //DS
 
     /**
-     * @brief Função de getter do code
-     * @return Valor do code
+     * @brief Function to get the value of the Code
+     * @return Code Value
      */
     string getCode() const;
+
     /**
-     * @brief Função para dar set ao valor de code
+     * @brief Function to change the value of Code
      * @param ncode
      */
     void setCode(string ncode);
 
     /**
-     * @brief Função de getter do Name
-     * @return Valor do Name
+     * @brief Function to get the value of Name
+     * @return Name value
      */
     string getName();
+
     /**
-     * @brief Função para dar set ao valor do Name
+     * @brief Function to change the value of Name
      * @param nName
      */
     void setName(string nName);
 
     /**
-     * @brief Função de getter do Capacity
-     * @return Valor do Capacity
+     * @brief Function to get the value of Capacity
+     * @return Capacity value
      */
     double getCapacity();
+
     /**
-     * @brief Função para dar set ao valor de Capacity
+     * @brief Function to change the value of Capacity
      * @param nCapacity
      */
     void setCapacity(double nCapacity);
 
     /**
-     * @brief Função de getter do Population
-     * @return Valor do Population
+     * @brief Function to get the value of Population
+     * @return Population value
      */
     double getPopulation();
+
     /**
-     * @brief Função para dar set ao valor de Population
+     * @brief Function to change the value of Population
      * @param nPopulation
      */
     void setPopulation(double nPopulation);
 
+    /**
+     * @brief Function to get the value of Demand
+     * @return Demand value
+     */
+    double getdemand();
+
+    /**
+     * @brief Function to change the value of Demand
+     * @param ndemand
+     */
+    void setdemand(double ndemand);
+
     bool operator==(const Info& other) const;
 
+    /**
+     * @brief Function to verify if a node is a City or not
+     * @return true if it is a city or false if isnt
+     */
     bool getIsCity();
-    double demand;
 
-
+    /**
+     * @brief Function to verify if a node is a Water Reservour or not
+     * @return true if it is a Water Reservour or false if isnt
+     */
     bool getIsWaterReservour() const;
 };
 

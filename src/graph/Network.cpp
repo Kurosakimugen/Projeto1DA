@@ -218,7 +218,7 @@ unordered_map<string, double> Network<T>::verifyWaterSupply() {
         Info cityInfo = cityVertex->getInfo();
 
         if (cityInfo.getIsCity()) {
-            double demand = cityInfo.demand; 
+            double demand = cityInfo.getdemand();
             double totalCapacity = 0.0;
 
             for (Edge<T>* edge : cityVertex->getIncoming()) {
@@ -272,7 +272,7 @@ bool Network<T>::checkDeliveryCapacity(const T& info) const {
     if (currentVertex != nullptr) {
         if (currentVertex->getInfo().getIsWaterReservour()) {
             double capacity = currentVertex->getInfo().getCapacity();
-            double demand = currentVertex->getInfo().demand;
+            double demand = currentVertex->getInfo().getdemand();
             if (capacity >= demand) {
                 return true;
             } else {
@@ -316,7 +316,7 @@ void Network<T>::checkImpactOfRemovingPumpingStation(const string &stationCode) 
         if (cityInfo.getIsCity()) {
             double citySupplyDeficit = 0.0;
             if (cityVertex->getAdj().empty()) {
-                citySupplyDeficit = cityInfo.demand;
+                citySupplyDeficit = cityInfo.getdemand();
                 affectedCities.push_back(cityInfo.getCode() + " - Deficit: " + to_string(citySupplyDeficit));
             }
         }
@@ -348,7 +348,7 @@ void Network<T>::checkImpactOfAllPumpingStations() {
             for (Vertex<T> *cityVertex : vertexSet) {
                 Info cityInfo = cityVertex->getInfo();
                 if (cityInfo.getIsCity() && cityVertex->getAdj().empty()) {
-                    double citySupplyDeficit = cityInfo.demand;
+                    double citySupplyDeficit = cityInfo.getdemand();
                     affectedCities.push_back(cityInfo.getCode() + " - Deficit: " + to_string(citySupplyDeficit));
                 }
             }
@@ -387,7 +387,7 @@ unordered_map<string, double> Network<T>::pumpingStationImpact(const Info& pumpi
     for (Edge<T>* edge : pumpingStationVertex->getIncoming()) {
         Vertex<T>* cityVertex = edge->getOrig();
         Info cityInfo = cityVertex->getInfo();
-        double deficit = cityInfo.demand - edge->getWeight();
+        double deficit = cityInfo.getdemand() - edge->getWeight();
         if (deficit > 0) {
             impact[cityInfo.getCode()] = deficit;
         }
@@ -407,8 +407,8 @@ unordered_map<string, double> Network<T>::allPumpingStationsImpact() const {
         for (Edge<T>* edge : vertex->getIncoming()) {
             totalSupply += edge->getWeight();
         }
-        if (totalSupply < info.demand) {
-            impact[info.getCode()] = info.demand - totalSupply;
+        if (totalSupply < info.getdemand()) {
+            impact[info.getCode()] = info.getdemand() - totalSupply;
         }
     }
     return impact;

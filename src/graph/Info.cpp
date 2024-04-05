@@ -99,3 +99,11 @@ bool Info::getIsCity() {
 bool Info::getIsWaterReservour() const{
     return isWaterReservour;
 }
+
+void Info::setdemand(double ndemand) {
+    demand = ndemand;
+}
+
+double Info::getdemand() {
+    return demand;
+}
