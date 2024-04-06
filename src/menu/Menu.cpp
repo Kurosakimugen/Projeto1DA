@@ -1,6 +1,7 @@
 #include "Menu.h"
 //#include "../graph/Network.cpp"
 #include <iostream>
+#include <iomanip>
 
 
 using namespace std;
@@ -237,39 +238,47 @@ void Menu::insertCityCode(Network network) {
 
 
 // T2.2
-void Menu::verifyWaterSupply(Network network) {
-    cout << " _____________________________________________ \n"
-            "|        Verify Water Supply                    |\n"
-            "                                               \n";
+
+void Menu::verifyWaterSupply(Network& network) {
+    cout << "_____________________________________________\n"
+         << "|        Verify Water Supply                 |\n"
+         << "_____________________________________________\n\n";
 
     auto waterDeficits = network.verifyWaterSupply();
 
     if (waterDeficits.empty()) {
-        cout << "All cities are supplied with enough water.\n";
+        cout << "All cities are supplied with enough water.\n\n";
     } else {
-        cout << "The following cities are facing water supply deficits:\n";
         for (const auto& [cityCode, deficit] : waterDeficits) {
-            cout << "City Code: " << cityCode << ", Water Deficit: " << deficit << endl;
+            Vertex* cityVertex = network.findVertex(cityCode);
+            Info cityInfo = cityVertex->getInfo();
+            double demand = cityInfo.getdemand();
+            double totalCapacity = demand - deficit; // Capacidade total é a demanda menos o déficit
+            cout << cityCode << " - " << cityInfo.getName() << "\n"
+                 << "● Demand: " << demand << "\n"
+                 << "● Actual Flow: " << totalCapacity << "\n" // Mostrar a capacidade total
+                 << "● Deficit: " << deficit << "\n\n";
         }
     }
 
-    cout << "                                               \n"
-            " > Back [0]                        > Quit [q]  \n"
-            " _____________________________________________ \n";
+    cout << "_____________________________________________\n"
+         << " > Back [0]                        > Quit [q]  \n"
+         << "_____________________________________________\n";
 
     string cmd;
-    getline(cin, cmd);
-
-    while (cmd != "q" && cmd != "0") {
-        cout << "ERROR: Choose a valid option \n";
+    while (true) {
         getline(cin, cmd);
+        if (cmd == "q" || cmd == "0") break;
+        cout << "ERROR: Choose a valid option \n";
     }
 
-    if (cmd == "q") quit();
-
-    nextPage();
-    mainPage(network);
+    if (cmd == "q") {
+        quit();  // Supondo que `quit()` é uma função que encerra o programa
+    } else {
+        mainPage(network);  // Supondo que `mainPage()` retorna ao menu principal
+    }
 }
+
 
 
 // T3.1
@@ -410,10 +419,11 @@ void Menu::pumpingStationImpact(Network network) {
             nextPage();
             specificPumpingStationImpact(network);
             break;
-        case 3:
+        /*case 3:
             nextPage();
             allPumpingStationsImpact(network);
             break;
+            */
     }
 
 }
@@ -491,6 +501,7 @@ void Menu::specificPumpingStationImpact(Network network) {
     cout << "_________________________________________________\n";
 }
 
+/*
 void Menu::allPumpingStationsImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|          All Pumping Stations Impact         |\n"
@@ -499,14 +510,15 @@ void Menu::allPumpingStationsImpact(Network network) {
     auto impact = network.allPumpingStationsImpact();
 
     cout << "Impact on delivery capacity for each city:\n";
-    for (const auto& [cityCode, deficit] : impact) {
+    for (const auto& [cityCode, data] : waterDeficits) {
+        const auto& [demand, actualFlow, deficit] = data;
         cout << "City Code: " << cityCode << ", Water Supply Deficit: " << deficit << endl;
     }
 
     cout << "_________________________________________________\n";
 }
 
-
+*/
 
 
 

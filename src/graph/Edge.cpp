@@ -47,3 +47,11 @@ double Edge::getFlow() const {
 void Edge::setFlow(double flow) {
     this->flow = flow;
 }
+
+bool Edge::getIsUnidirectional() const {
+    return isUnidirectional;
+}
+
+void Edge::setIsUnidirectional(bool value) {
+    isUnidirectional = value;
+}

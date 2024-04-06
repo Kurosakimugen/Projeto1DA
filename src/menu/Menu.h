@@ -31,7 +31,7 @@ public:
      * Function to start the verify the water suply
      * @param network
      */
-    void verifyWaterSupply(Network network);
+    void verifyWaterSupply(Network& network);
 
     /**
      * Function to start the label of max water amount

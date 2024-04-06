@@ -75,6 +75,9 @@ public:
      * @param flow
      */
     void setFlow(double flow);
+
+    bool getIsUnidirectional() const;
+
 protected:
     Vertex *dest; // destination vertex
     double weight; // edge weight, can also be used for capacity
@@ -88,6 +91,8 @@ protected:
 
     double flow; // for flow-related problems
     bool isUnidirectional;
+
+    void setIsUnidirectional(bool value);
 };
 
 #endif // EDGE_H

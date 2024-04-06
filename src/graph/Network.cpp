@@ -209,23 +209,38 @@ bool Network::addEdge(const string &srcCode, const string &destCode, double w,bo
 
 
 // T2.2
-
 unordered_map<string, double> Network::verifyWaterSupply() {
+    unordered_map<string, double> totalCapacities;
     unordered_map<string, double> waterDeficits;
+
+    for (Vertex* reservoirVertex : vertexSet) {
+        Info reservoirInfo = reservoirVertex->getInfo();
+        if (reservoirInfo.getIsWaterReservour()) {
+            for (Edge* edge : reservoirVertex->getAdj()) {
+                Vertex* servicePoint = edge->getDest();
+                double capacity = edge->getWeight();
+                totalCapacities[servicePoint->getInfo().getCode()] += capacity;
+            }
+        }
+    }
 
     for (Vertex* cityVertex : vertexSet) {
         Info cityInfo = cityVertex->getInfo();
-
         if (cityInfo.getIsCity()) {
             double demand = cityInfo.getdemand();
             double totalCapacity = 0.0;
 
             for (Edge* edge : cityVertex->getIncoming()) {
-                totalCapacity += edge->getWeight();
+                Vertex* reservoir = edge->getOrig();
+                string reservoirCode = reservoir->getInfo().getCode();
+                totalCapacity += totalCapacities[reservoirCode];
             }
 
-            if (totalCapacity < demand) {
-                double deficit = demand - totalCapacity;
+            double actualFlow = min(demand, totalCapacity);
+
+            double deficit = demand - actualFlow;
+
+            if (deficit > 0) {
                 waterDeficits[cityInfo.getCode()] = deficit;
             }
         }
@@ -237,8 +252,8 @@ unordered_map<string, double> Network::verifyWaterSupply() {
 
 
 
-// T3.1
 
+// T3.1
 
 std::vector<std::string> Network::removeReservoir(const std::string& reservoirCode) {
     Vertex* reservoirVertex = findVertex(reservoirCode);
@@ -284,8 +299,6 @@ bool Network::checkDeliveryCapacity(Info info) const {
         return false;
     }
 }
-
-
 
 // T3.2 - Lidar com a remoção de uma estação de bombeamento específica
 

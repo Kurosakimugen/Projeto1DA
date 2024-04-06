@@ -107,3 +107,11 @@ void Info::setdemand(double ndemand) {
 double Info::getdemand() {
     return demand;
 }
+
+double Info::getFlow() const{
+    return flow;
+}
+
+void Info::setFlow(double nflow){
+    flow = nflow;
+}
