@@ -3,9 +3,7 @@
 
 #include <string>
 #include <vector>
-//#include "Vertex.h"
 #include "Edge.h"
-//#include "Info.h"
 #include <unordered_map>
 
 using namespace std;
@@ -13,8 +11,6 @@ using namespace std;
 class Network {
 private:
     vector<Vertex *> vertexSet;
-    //vector<Edge<T>*> edgeSet;
-    //unordered_map<string, Vertex<T>*> vertexMap;
 
 public:
 
@@ -145,6 +141,7 @@ public:
      */
     unordered_map<string, double> allPumpingStationsImpact() const;
 
+    vector<Vertex *> getVertexSet();
 };
 
 

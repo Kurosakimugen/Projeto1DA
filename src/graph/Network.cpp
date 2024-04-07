@@ -208,6 +208,8 @@ bool Network::addEdge(const string &srcCode, const string &destCode, double w,bo
 }
 
 
+
+
 // T2.2
 
 unordered_map<string, double> Network::verifyWaterSupply() {
@@ -234,11 +236,7 @@ unordered_map<string, double> Network::verifyWaterSupply() {
     return waterDeficits;
 }
 
-
-
-
 // T3.1
-
 
 std::vector<std::string> Network::removeReservoir(const std::string& reservoirCode) {
     Vertex* reservoirVertex = findVertex(reservoirCode);
@@ -411,4 +409,8 @@ unordered_map<string, double> Network::allPumpingStationsImpact() const {
         }
     }
     return impact;
+}
+
+vector<Vertex *> Network::getVertexSet() {
+    return this->vertexSet;
 }

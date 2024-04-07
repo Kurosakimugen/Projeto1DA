@@ -1,4 +1,5 @@
 #include "Menu.h"
+#include "../algorithms/Algorithms.h"
 //#include "../graph/Network.cpp"
 #include <iostream>
 
@@ -118,10 +119,13 @@ void Menu::maxAmountWater(Network network) {
 void Menu::maxAmountWater_AllCities(Network network) {
     //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA TDS AS CITIES E DAR PRINT
 
+
+
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
-            "                                               \n"
-            " nothing happens                               \n"
+            "                                               \n";
+
+    cout << " nothing happens                               \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
@@ -148,10 +152,37 @@ void Menu::maxAmountWater_AllCities(Network network) {
 void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
     //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA UMA CITY E DAR PRINT
 
+    // reservoirs are sources
+    // cities are sinks, target is cityVertex
+    // do edmonds
+    //get max flow from the sum of all the sinks capacity values
+
+    string targetCode = cityVertex->getInfo().getCode();
+    double maxflow = 0;
+
+    for(auto v : network.getVertexSet()){
+        if(v->getInfo().getIsWaterReservour()){
+            edmondsKarp(&network, v->getInfo().getCode(), cityVertex->getInfo().getCode());
+            //might have to reset graph each time!!!
+
+            double maxflowContender = 0;
+            //get maxflow from reservoir X -> target
+
+            for(auto e : cityVertex->getIncoming()){
+                maxflowContender += e->getFlow();
+            }
+
+            if(maxflowContender > maxflow) maxflow = maxflowContender;
+
+        }
+    }
+
+
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
             "                                               \n"
-            "  nothing  yet                                 \n"
+
+            "  The given cities maxflow is  " << maxflow <<"\n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
@@ -506,11 +537,3 @@ void Menu::allPumpingStationsImpact(Network network) {
     cout << "_________________________________________________\n";
 }
 
-
-
-
-
-
-//void Menu::edmondsKarp(Network *network, string sourceCode, string targetCode) {}
-
-//void Menu::augmentFlowAlongPath(Vertex *s, Vertex *t, double flow) {}
