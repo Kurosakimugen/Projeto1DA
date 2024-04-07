@@ -6,7 +6,7 @@ void visitAndTest(std::queue< Vertex*> &q, Edge *e, Vertex *w, double residual){
 // if w isnt visited and there is residual capacity do:
 
     if (! w->isVisited() && residual > 0) {
-    // Mark 'w' as visited, set the path through which it was reached, and enqueue it
+        // Mark 'w' as visited, set the path through which it was reached, and enqueue it
         w->setVisited(true);
         w->setPath(e);
         q.push(w);
@@ -37,7 +37,7 @@ double findMinResidualAlongPath(Vertex *sourceVertex, Vertex *targetVertex){
     for (auto v = targetVertex; v != sourceVertex; ) {
         auto e = v->getPath();
         if (e->getDest() == v) {
-            f = std::min(f, e->getWeight() - e->getFlow());
+            f = std::min(f, e->getCapacity() - e->getFlow());
             v = e->getOrig();
         }
         else {
@@ -52,9 +52,9 @@ double findMinResidualAlongPath(Vertex *sourceVertex, Vertex *targetVertex){
 
 bool findAugmentingPath(Network *network, Vertex *sourceVertex, Vertex *targetVertex){
 
-for(auto v : network->getVertexSet()) {
-    v->setVisited(false);
-}
+    for(auto v : network->getVertexSet()) {
+        v->setVisited(false);
+    }
 
     sourceVertex->setVisited(true);
     std::queue<Vertex *> q;
@@ -67,7 +67,7 @@ for(auto v : network->getVertexSet()) {
 
         // outgoing edges
         for(auto e: v->getAdj()) {
-            visitAndTest(q, e, e->getDest(), e->getWeight() - e->getFlow());
+            visitAndTest(q, e, e->getDest(), e->getCapacity() - e->getFlow());
         }
 
         // incoming edges
@@ -102,6 +102,8 @@ void edmondsKarp(Network *network, string sourceCode, string targetCode){
         augmentFlowOfPath(sourceVertex, targetVertex, flow);
     }
 /* Calculate and save incoming flow for each vertex*/
+
+/*
     for (auto &v : network->getVertexSet()) {
 
         double incomingFlow = 0;
@@ -110,4 +112,5 @@ void edmondsKarp(Network *network, string sourceCode, string targetCode){
         }
         v->setFlow(incomingFlow);
     }
+    */
 }

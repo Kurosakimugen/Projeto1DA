@@ -110,7 +110,7 @@ public:
      * @param isUnidirectional
      * @return
      */
-    Edge * addEdge(Vertex *dest, double w, bool isUnidirectional);
+    Edge * addEdge(Vertex *dest, double w, bool isUnidirectional, double flow);
 
     /**
      * Function to remove a certain edge for all the edges
@@ -124,7 +124,7 @@ public:
      */
     void removeOutgoingEdges();
 
-    void setFlow(double f);
+    //void setFlow(double f);
 
 protected:
     Info info;                // info node

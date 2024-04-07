@@ -12,6 +12,8 @@ using namespace std;
 class Network {
 private:
     vector<Vertex *> vertexSet;
+    //vector<Vertex *> reserVoirSet;
+    //vector<Vertex *> citySet;
 
 public:
 
@@ -71,14 +73,14 @@ public:
      * @param isUnidirectional
      * @return true if sucessful or false otherwise
      */
-    bool addEdge(const string &srcCode, const string &destCode, double w, bool isUnidirectional);
+    bool addEdge(const string &srcCode, const string &destCode, double w, bool isUnidirectional, double flow);
 
     /**
      * Function to delete an Vertex
      * @param in
      * @return true if sucessful or false otherwise
      */
-    bool removeVertex(Info &in);
+    bool removeVertex(string infoCode);
 
     /**
      * Function to verify the water suplies
@@ -104,7 +106,7 @@ public:
      * @param info
      * @return true if sucessful or false otherwise
      */
-    bool checkDeliveryCapacity(Info info) const;
+    //bool checkDeliveryCapacity(Info info) const;
 
     /**
      * Function to remove a pumping station
@@ -142,29 +144,10 @@ public:
      */
     unordered_map<string, double> allPumpingStationsImpact() const;
 
-    double calculateActualFlow(Vertex *cityVertex);
-
-
     vector<Vertex *> getReservoirs() const;
 
-    /**
-     * Function that calculates the delivery capacity of certain water reservoir
-     * @param reservoirVertex
-     * @return list of the results
-     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity() const;
 
-    /**
-    * Function that calculates the flow after some change made on the graph
-    * @param cityVertex
-    * @return
-    */
-    double calculateNewFlow(Vertex *cityVertex) const;
-
-    /**
-     * Function to calculate the delivery capacity
-     * @return a list with the results
-     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 
     vector<Vertex *> getVertexSet();
@@ -182,6 +165,15 @@ public:
     void temporarilyRemoveStation(const string &stationCode);
 
     double calculateWaterDeficit(const string &cityCode, double oldFlow, double newFlow);
+
+
+    void createMasterSource();
+    void createMasterSink();
+
+    double calculateCityMaxFlow(Vertex* cityVertex);
+
+    void runEdmondsKarp();
+    void resetEdmondsKarp();
 
     /**
      * Function that calculates the impact of each pipeline removal of the graph

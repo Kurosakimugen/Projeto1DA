@@ -7,8 +7,8 @@ Vertex::Vertex(Info in): info(in) {}
  * with a given destination vertex (d) and edge weight (w).
  */
 
-Edge * Vertex::addEdge(Vertex *d, double w, bool isUnidirectional ) {
-    auto newEdge = new Edge(this, d, w, isUnidirectional);
+Edge * Vertex::addEdge(Vertex *d, double w, bool isUnidirectional ,double flow = 0) {
+    auto newEdge = new Edge(this, d, w, isUnidirectional,flow);
     adj.push_back(newEdge);
     d->incoming.push_back(newEdge);
     return newEdge;
@@ -139,8 +139,4 @@ void Vertex::deleteEdge(Edge *edge) {
     }
     delete edge;
 
-}
-
-void Vertex::setFlow(double f) {
-    this->info.setFlow(f);
 }
