@@ -143,8 +143,16 @@ public:
     */
     void setIsEssential(bool value);
 
+    /**
+     * Function to check if is Delivery site or not
+     * @return yes if true or false otherwise
+     */
     bool getIsDeliverySite() const;
 
+    /**
+     * Function to get the maximum delivery
+     * @return value of maximum delivery
+     */
     double getMaximumDelivery() const;
 };
 

@@ -36,10 +36,16 @@ public:
     Vertex *getDest() const;
 
     /**
-     * Function to get the value of weight
+     * Function to get the value of capacity
      * @return weight value
      */
     double getCapacity() const;
+
+    /**
+     * Function to set the value of capacity
+     * @param d
+     */
+    void setCapacity(double d);
 
     /**
      * Function to get the origin vertex
@@ -91,8 +97,6 @@ public:
     */
     bool getIsUnidirectional() const;
 
-
-    void setCapacity(double d);
 
 protected:
     Vertex *dest; // destination vertex

@@ -144,30 +144,87 @@ public:
      */
     unordered_map<string, double> allPumpingStationsImpact() const;
 
+    /**
+     * Function to get the reservoirs
+     * @return list with all reservoirs
+     */
     vector<Vertex *> getReservoirs() const;
 
+    /**
+     * Function to calculate the delivery capacity
+     * @return list with values
+     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity() const;
 
+    /**
+     * Function to calculate the delivery capacity
+     * @param reservoirVertex
+     * @return list with values
+     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 
+    /**
+     * Function to get the vertex set
+     * @return
+     */
     vector<Vertex *> getVertexSet();
 
+    /**
+     * Function to calculate the flow after some station is removed
+     * @param stationCode
+     * @param cityCode
+     * @return
+     */
     double calculateFlowAfterStationRemoval(const string &stationCode, const string &cityCode);
 
+    /**
+     * Function to find which pumping stations are essencial
+     * @return
+     */
     vector<string> findNotEssentialPumpingStations();
 
+    /**
+     * Function to build the network
+     */
     void restoreNetwork();
 
+    /**
+     * Function to identify which are the most affected cities by a certain station
+     * @param stationCode
+     * @return List with the results of the tes
+     */
     std::map<string, double> identifyMostAffectedCities(const string &stationCode);
 
+    /**
+     * Function to check the delivery capacity after a removal of a station
+     * @param stationCode
+     * @return true if valid or false otherwise
+     */
     bool checkDeliveryCapacityAfterRemoval(const string &stationCode);
 
+    /**
+     * Function to temporarily remove a station
+     * @param stationCode
+     */
     void temporarilyRemoveStation(const string &stationCode);
 
+    /**
+     * Function to calculate the water deficit of a certain city
+     * @param cityCode
+     * @param oldFlow
+     * @param newFlow
+     * @return the difference between the old value and the new value
+     */
     double calculateWaterDeficit(const string &cityCode, double oldFlow, double newFlow);
-
-
+    
+    /**
+     * Function to create the Master source
+     */
     void createMasterSource();
+
+    /**
+     * Function to create the Master Sink
+     */
     void createMasterSink();
 
     double calculateCityMaxFlow(Vertex* cityVertex);
