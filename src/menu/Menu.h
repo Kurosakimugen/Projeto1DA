@@ -56,7 +56,7 @@ public:
      * Function to start a city node
      * @param network
      */
-    void insertCityCode(Network network);
+    void insertCityCode(Network network, int option);
 
     /**
      * Function to start the reservoir impact label

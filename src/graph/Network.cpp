@@ -1,12 +1,14 @@
 #include "Network.h"
 #include "../algorithms/Algorithms.h"
-
 #include <fstream>
 #include <sstream>
 #include <iostream>
 #include <unordered_map>
 #include <queue>
 #include <map>
+#include <unordered_map>
+#include <string>
+#include <utility>
 
 void Network::read_reservoirsFile(string reservoirFilename) {
     ifstream file(reservoirFilename);
@@ -32,7 +34,6 @@ void Network::read_reservoirsFile(string reservoirFilename) {
             double Maximum_Delivery = stod(Maximum_Delivery_String);
 
             int ID = stoi(IdString);
-
 
 
             //addVertex(Info(Reservoir,Municipality,ID,Code,Maximum_Delivery));
@@ -210,44 +211,33 @@ bool Network::addEdge(const string &srcCode, const string &destCode, double w,bo
 
 
 // T2.2
-unordered_map<string, double> Network::verifyWaterSupply() {
-    unordered_map<string, double> totalCapacities;
-    unordered_map<string, double> waterDeficits;
+unordered_map<string , pair<double,double>> Network::verifyWaterSupply() {
+    unordered_map<string, pair<double,double>> cityDeficitsMap;
 
-    for (Vertex* reservoirVertex : vertexSet) {
-        Info reservoirInfo = reservoirVertex->getInfo();
-        if (reservoirInfo.getIsWaterReservour()) {
-            for (Edge* edge : reservoirVertex->getAdj()) {
-                Vertex* servicePoint = edge->getDest();
-                double capacity = edge->getCapacity();
-                totalCapacities[servicePoint->getInfo().getCode()] += capacity;
+    pair<double,double> flowAndDemand;
+
+    runEdmondsKarp();
+
+    for(auto v: vertexSet){
+        double flow = 0;
+        if(v->getInfo().getIsCity()){
+            for(auto e : v->getIncoming()){
+                flow += e->getFlow();
             }
+
+            double demand = v->getInfo().getdemand();
+            string cityCode = v->getInfo().getCode();
+
+            flowAndDemand = make_pair(flow,demand);
+
+            cityDeficitsMap[cityCode] = flowAndDemand;
+
         }
     }
 
-    for (Vertex* cityVertex : vertexSet) {
-        Info cityInfo = cityVertex->getInfo();
-        if (cityInfo.getIsCity()) {
-            double demand = cityInfo.getdemand();
-            double totalCapacity = 0.0;
+    resetEdmondsKarp();
 
-            for (Edge* edge : cityVertex->getIncoming()) {
-                Vertex* reservoir = edge->getOrig();
-                string reservoirCode = reservoir->getInfo().getCode();
-                totalCapacity += totalCapacities[reservoirCode];
-            }
-
-            double actualFlow = min(demand, totalCapacity);
-
-            double deficit = demand - actualFlow;
-
-            if (deficit > 0) {
-                waterDeficits[cityInfo.getCode()] = deficit;
-            }
-        }
-    }
-
-    return waterDeficits;
+    return cityDeficitsMap;
 }
 
 
@@ -387,18 +377,20 @@ double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, do
 
 unordered_map<string, string> Network::eachPipelineImpact() {
     unordered_map<string, string> impact;
+    auto vertexs = vertexSet;
 
     // Cria uma lista com os flows originais
     unordered_map<string, double> originalFlows;
-    for (Vertex* cityVertex : vertexSet) {
+    for (Vertex* cityVertex : vertexs) {
         if (cityVertex->getInfo().getIsCity()) {
             originalFlows[cityVertex->getInfo().getCode()] = calculateCityMaxFlow(cityVertex);
         }
     }
 
-    for (Vertex* vertex : vertexSet) {
+    for (Vertex* vertex : vertexs) {
         for (Edge* edge : vertex->getAdj()) {
             double originalWeight = edge->getCapacity();
+            edge->setCapacity(0.0);
 
             // Compara o impacto do flow
             for (const auto& [cityCode, originalFlow] : originalFlows) {
@@ -412,9 +404,9 @@ unordered_map<string, string> Network::eachPipelineImpact() {
 
                 if (flowDifference != 0) {
                     if (impact.find(pipeId) == impact.end()) {
-                        impact[pipeId] = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                        impact[pipeId] = pipeId + " affects: " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                     } else {
-                        impact[pipeId] += " | " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                        impact[pipeId] += " | " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                     }
                 }
             }
@@ -444,7 +436,7 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
             string pipeId = origId + "->" + destId;
 
             if (flowDifference != 0) {
-                string impactDescription = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference) + ".";
+                string impactDescription = pipeId + " affects: " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                 impact[pipeId] = impactDescription;
             }
 
@@ -454,6 +446,8 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
 
     return impact;
 }
+
+
 
 void Network::createMasterSource() {
     string masterSourceCode = "MSrc";
