@@ -151,6 +151,8 @@ public:
     double calculateNewFlow(Vertex *cityVertex) const;
 
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
+
+    vector<Vertex *> getVertexSet();
 };
 
 

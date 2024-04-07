@@ -425,3 +425,9 @@ unordered_map<string, double> Network::allPumpingStationsImpact() const {
     }
     return impact;
 }
+
+vector<Vertex *> Network::getVertexSet() {
+    return this->vertexSet;
+}
+
+

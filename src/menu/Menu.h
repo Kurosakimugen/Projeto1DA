@@ -100,7 +100,6 @@ public:
      */
     void allPumpingStationsImpact(Network network);
 
-
 };
 
 

@@ -150,10 +150,36 @@ void Menu::maxAmountWater_AllCities(Network network) {
 void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
     //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA UMA CITY E DAR PRINT
 
+    //WR sao sources
+    //C are sinks, neste caso so ha uma sink
+    //maxflow is the sum of all bottleneck values of the sink
+
+    string targetCode = cityVertex->getInfo().getCode();
+    double maxFlow = 0;
+
+    for(auto v : network.getVertexSet()){
+        if(v->getInfo().getIsWaterReservour()){
+            string sourceCode = v->getInfo().getCode();
+            edmondsKarp(&network,sourceCode,targetCode);
+
+            double maxFlowContender = 0;
+
+            for(auto e : cityVertex->getIncoming()){
+                maxFlowContender += e->getFlow();
+            }
+
+            if(maxFlowContender > maxFlow) maxFlow = maxFlowContender;
+        }
+
+    }
+
+
+
+
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
             "                                               \n"
-            "  nothing  yet                                 \n"
+            "  city's max flow is:         "<< maxFlow <<"  \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
@@ -239,7 +265,7 @@ void Menu::insertCityCode(Network network) {
 
 
 // T2.2
-void Menu::verifyWaterSupply(Network network) {
+void Menu::verifyWaterSupply(Network& network) {
     cout << " _____________________________________________ \n"
             "|        Verify Water Supply                    |\n"
             "                                               \n";
@@ -507,12 +533,3 @@ void Menu::allPumpingStationsImpact(Network network) {
 
     cout << "_________________________________________________\n";
 }
-
-
-
-
-
-
-//void Menu::edmondsKarp(Network *network, string sourceCode, string targetCode) {}
-
-//void Menu::augmentFlowAlongPath(Vertex *s, Vertex *t, double flow) {}
