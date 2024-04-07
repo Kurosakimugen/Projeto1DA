@@ -17,6 +17,7 @@ private:
     double maximumDelivery;
     double capacity;
     double demand;
+    double flow;
 
     // the appropriate one is set to true when reading, the rest stays false
     bool isWaterReservour = false;
@@ -129,6 +130,10 @@ public:
      * @return true if it is a Water Reservour or false if isnt
      */
     bool getIsWaterReservour() const;
+
+    void setFlow(double nflow);
+
+    double getFlow() const;
 };
 
 

@@ -83,7 +83,7 @@ public:
      * Function to verify the water suplies
      * @return
      */
-    unordered_map<std::string, double> verifyWaterSupply();
+    unordered_map<string, double> verifyWaterSupply();
 
     /**
      * Function to verify the capacity of x
@@ -141,7 +141,16 @@ public:
      */
     unordered_map<string, double> allPumpingStationsImpact() const;
 
-    vector<Vertex *> getVertexSet();
+    double calculateActualFlow(Vertex *cityVertex);
+
+
+    vector<Vertex *> getReservoirs() const;
+
+    vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity() const;
+
+    double calculateNewFlow(Vertex *cityVertex) const;
+
+    vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 };
 
 
