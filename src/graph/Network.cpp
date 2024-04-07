@@ -68,14 +68,14 @@ void Network::read_citiesFile(string citiesFilename) {
             getline (iss, Code, ',') &&
             getline (iss, DemandString, ',') &&
             getline (iss, PopulationString)) {
-
+            /*
             //remove weird formatting & comma from PopulationString
             PopulationString = PopulationString.substr(1); // Remove the first character (leading double quote)
             if (PopulationString.back() == '"') { // Check if the last character is a double quote
                 PopulationString.pop_back(); // Remove the last character (trailing double quote)
             }
             PopulationString.replace(PopulationString.find(","), 1, "");
-
+            */
 
             int Population = stoi(PopulationString);
             int ID = stoi(IdString);
@@ -110,8 +110,8 @@ void Network::read_stationsFile(string stationsFilename) {
         istringstream iss(line);
         string IdString, Code,temp;
         if (getline (iss, IdString, ',') &&
-            getline (iss, Code, ',') &&
-            getline (iss, temp, ',')){
+            getline (iss, Code, ',') /*&&
+            getline (iss, temp, ',') */){
 
 
             if(IdString != ""){  //todo- ta aqui um if pq o documento csv acaba com ,,, probs o doc final n tem
@@ -173,10 +173,14 @@ void Network::build() {
     //calls all reads at once
     //Rever os paths para os ficheiros serem lidos corretamente.
 
-    this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
-    this->read_citiesFile("Dataset/Cities_Madeira.csv");
-    this->read_stationsFile("Dataset/Stations_Madeira.csv");
-    this->read_pipesFile("Dataset/Pipes_Madeira.csv");
+    //this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
+    //this->read_citiesFile("Dataset/Cities_Madeira.csv");
+    //this->read_stationsFile("Dataset/Stations_Madeira.csv");
+    //this->read_pipesFile("Dataset/Pipes_Madeira.csv");
+    this->read_reservoirsFile("Dataset/Reservoir.csv");
+    this->read_citiesFile("Dataset/Cities.csv");
+    this->read_stationsFile("Dataset/Stations.csv");
+    this->read_pipesFile("Dataset/Pipes.csv");
 }
 
 
@@ -436,19 +440,21 @@ double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, do
 
 unordered_map<string, string> Network::eachPipelineImpact() {
     unordered_map<string, string> impact;
+    auto vertexs = vertexSet;
 
     // Cria uma lista com os flows originais
     unordered_map<string, double> originalFlows;
-    for (Vertex* cityVertex : vertexSet) {
+    for (Vertex* cityVertex : vertexs) {
         if (cityVertex->getInfo().getIsCity()) {
             originalFlows[cityVertex->getInfo().getCode()] = calculateActualFlow(cityVertex);
         }
     }
 
-    for (Vertex* vertex : vertexSet) {
+    for (Vertex* vertex : vertexs) {
         for (Edge* edge : vertex->getAdj()) {
             double originalWeight = edge->getWeight();
             edge->setWeight(0.0);
+
 
             // Compara o impacto do flow
             for (const auto& [cityCode, originalFlow] : originalFlows) {
@@ -462,9 +468,9 @@ unordered_map<string, string> Network::eachPipelineImpact() {
 
                 if (flowDifference != 0) {
                     if (impact.find(pipeId) == impact.end()) {
-                        impact[pipeId] = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                        impact[pipeId] = pipeId + " affects: " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                     } else {
-                        impact[pipeId] += " | " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                        impact[pipeId] += " | " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                     }
                 }
             }
@@ -494,7 +500,7 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
             string pipeId = origId + "->" + destId;
 
             if (flowDifference != 0) {
-                string impactDescription = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference) + ".";
+                string impactDescription = pipeId + " affects: " + cityVertex->getInfo().getName() + " by going from " + to_string(originalFlow) + " to " + to_string(newFlow) + " resulting in a difference of " + to_string(flowDifference);
                 impact[pipeId] = impactDescription;
             }
 

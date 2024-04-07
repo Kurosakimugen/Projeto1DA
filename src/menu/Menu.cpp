@@ -637,7 +637,7 @@ void Menu::CityPipelineImpact(Network network) {
 
     auto impact = network.CityPipelineImpact(CityVertex);
 
-    cout << "Impact on the flow of " << CityVertex->getInfo().getName() << "city:\n";
+    cout << "Impact on the flow of " << CityVertex->getInfo().getName() << " city:\n";
     for (const auto& [PipeID, Resultado] : impact) {
         cout << Resultado << endl;
     }
