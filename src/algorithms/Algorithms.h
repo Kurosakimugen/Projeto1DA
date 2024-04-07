@@ -14,6 +14,4 @@ void visitAndTest(std::queue< Vertex*> &q, Edge *e, Vertex *w, double residual);
 
 
 
-
-
 #endif //PROJETO1DA_ALGORITHMS_H

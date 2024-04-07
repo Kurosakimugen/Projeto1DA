@@ -124,6 +124,8 @@ public:
      */
     void removeOutgoingEdges();
 
+    void setFlow(double f);
+
 protected:
     Info info;                // info node
     std::vector<Edge *> adj;  // outgoing edges

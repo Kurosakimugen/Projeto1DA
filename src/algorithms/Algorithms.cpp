@@ -3,7 +3,7 @@
 #include "Algorithms.h"
 
 void visitAndTest(std::queue< Vertex*> &q, Edge *e, Vertex *w, double residual){
-// if w isnt visited and there is residual capacity do
+// if w isnt visited and there is residual capacity do:
 
     if (! w->isVisited() && residual > 0) {
     // Mark 'w' as visited, set the path through which it was reached, and enqueue it
@@ -65,15 +65,17 @@ for(auto v : network->getVertexSet()) {
         auto v = q.front();
         q.pop();
 
+        // outgoing edges
+        for(auto e: v->getAdj()) {
+            visitAndTest(q, e, e->getDest(), e->getWeight() - e->getFlow());
+        }
+
         // incoming edges
         for(auto e: v->getIncoming()) {
             visitAndTest(q, e, e->getOrig(), e->getFlow());
         }
 
-        // outgoing edges
-        for(auto e: v->getAdj()) {
-            visitAndTest(q, e, e->getDest(), e->getWeight() - e->getFlow());
-        }
+
 
     }
 //if path to target is found returns true
@@ -99,5 +101,13 @@ void edmondsKarp(Network *network, string sourceCode, string targetCode){
         double flow = findMinResidualAlongPath(sourceVertex, targetVertex);
         augmentFlowOfPath(sourceVertex, targetVertex, flow);
     }
+/* Calculate and save incoming flow for each vertex*/
+    for (auto &v : network->getVertexSet()) {
 
+        double incomingFlow = 0;
+        for (auto e: v->getIncoming()) {
+            incomingFlow += e->getFlow();
+        }
+        v->setFlow(incomingFlow);
+    }
 }

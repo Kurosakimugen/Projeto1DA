@@ -140,3 +140,7 @@ void Vertex::deleteEdge(Edge *edge) {
     delete edge;
 
 }
+
+void Vertex::setFlow(double f) {
+    this->info.setFlow(f);
+}

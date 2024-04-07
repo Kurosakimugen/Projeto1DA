@@ -162,11 +162,14 @@ void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
             string sourceCode = v->getInfo().getCode();
             edmondsKarp(&network,sourceCode,targetCode);
 
+
             double maxFlowContender = 0;
 
+            maxFlowContender = cityVertex->getInfo().getFlow();
+            /*
             for(auto e : cityVertex->getIncoming()){
                 maxFlowContender += e->getFlow();
-            }
+            }*/
 
             if(maxFlowContender > maxFlow) maxFlow = maxFlowContender;
         }
