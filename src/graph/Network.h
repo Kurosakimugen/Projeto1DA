@@ -227,9 +227,21 @@ public:
      */
     void createMasterSink();
 
+    /**
+     * Function to calculate the max flow of a certain city
+     * @param cityVertex
+     * @return
+     */
     double calculateCityMaxFlow(Vertex* cityVertex);
 
+    /**
+     * Function that starts run Edmonds Karp algorithm
+     */
     void runEdmondsKarp();
+
+    /**
+     * Function that reverts the graph back to original
+     */
     void resetEdmondsKarp();
 
     /**
