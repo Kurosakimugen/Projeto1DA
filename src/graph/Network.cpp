@@ -66,14 +66,14 @@ void Network::read_citiesFile(string citiesFilename) {
             getline (iss, Code, ',') &&
             getline (iss, DemandString, ',') &&
             getline (iss, PopulationString)) {
-            /*
-            //remove weird formatting & comma from PopulationString
+
+            //retirar isto para ler o total
             PopulationString = PopulationString.substr(1); // Remove the first character (leading double quote)
             if (PopulationString.back() == '"') { // Check if the last character is a double quote
                 PopulationString.pop_back(); // Remove the last character (trailing double quote)
             }
             PopulationString.replace(PopulationString.find(","), 1, "");
-            */
+
 
             int Population = stoi(PopulationString);
             int ID = stoi(IdString);
@@ -108,9 +108,10 @@ void Network::read_stationsFile(string stationsFilename) {
         istringstream iss(line);
         string IdString, Code,temp;
         if (getline (iss, IdString, ',') &&
-            getline (iss, Code, ',') /*&&
-            getline (iss, temp, ',') */){
+            getline (iss, Code, ',') &&
+            getline (iss, temp, ',') ){
 
+            //retirar o temp caso seja para ler o total
 
             if(IdString != ""){  //todo- ta aqui um if pq o documento csv acaba com ,,, probs o doc final n tem
                 int ID = stoi(IdString);
@@ -172,14 +173,14 @@ void Network::build() {
     //calls all reads at once
     //Rever os paths para os ficheiros serem lidos corretamente.
 
-    //this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
-    //this->read_citiesFile("Dataset/Cities_Madeira.csv");
-    //this->read_stationsFile("Dataset/Stations_Madeira.csv");
-    //this->read_pipesFile("Dataset/Pipes_Madeira.csv");
-    this->read_reservoirsFile("Dataset/Reservoir.csv");
-    this->read_citiesFile("Dataset/Cities.csv");
-    this->read_stationsFile("Dataset/Stations.csv");
-    this->read_pipesFile("Dataset/Pipes.csv");
+    this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
+    this->read_citiesFile("Dataset/Cities_Madeira.csv");
+    this->read_stationsFile("Dataset/Stations_Madeira.csv");
+    this->read_pipesFile("Dataset/Pipes_Madeira.csv");
+    //this->read_reservoirsFile("Dataset/Reservoir.csv");
+    //this->read_citiesFile("Dataset/Cities.csv");
+    //this->read_stationsFile("Dataset/Stations.csv");
+    //this->read_pipesFile("Dataset/Pipes.csv");
 }
 
 
@@ -404,7 +405,7 @@ unordered_map<string, string> Network::eachPipelineImpact() {
     for (Vertex* vertex : vertexs) {
         for (Edge* edge : vertex->getAdj()) {
             double originalWeight = edge->getCapacity();
-
+            edge->setCapacity(0.0);
 
             // Compara o impacto do flow
             for (const auto& [cityCode, originalFlow] : originalFlows) {
