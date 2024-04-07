@@ -63,12 +63,11 @@ void augmentFlowOfPath(Vertex *sourceVertex, Vertex *targetVertex, double flow);
 double findMinResidualAlongPath(Vertex *sourceVertex, Vertex *targetVertex);
 
 /**
- * @brief Finds an augmenting path using Breadth-First Search.
+ * @brief Finds an path using BFS.
  *
- * @details This function performs a Breadth-First Search (BFS) on the given network 'g' starting from the source vertex 's'
- * to find an augmenting path leading to the target vertex 't'. It marks all vertices as unvisited initially, then marks
- * the source vertex 's' as visited and enqueues it. During BFS traversal, it processes outgoing and incoming edges of each
- * visited vertex to find an augmenting path.
+ * @details This function performs (BFS) on the given network starting from the sourceVertex to find path leading to
+ * the targetVertex. It marks all vertices as unvisited, then as it goes marks the sourceVertex as visited and enqueues it.
+ * During BFS, it processes all edges of each vertex to find a path.
  *
  * @param network
  * @param sourceVertex
