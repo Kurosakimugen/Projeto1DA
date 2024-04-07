@@ -121,14 +121,6 @@ void Menu::maxAmountWater(Network network) {
 // T2.1
 void Menu::maxAmountWater_AllCities(Network network) {
 
-    std::string outputFile = ".../output/T2_1-ALLCities.txt";
-
-
-    std::ofstream outFile(outputFile);
-    if (!outFile.is_open()) {
-        std::cerr << "ERROR: Unable to create output file " << outputFile << std::endl;
-        return;
-    }
 
     network.runEdmondsKarp();
 
@@ -144,7 +136,6 @@ void Menu::maxAmountWater_AllCities(Network network) {
                 flow += e->getFlow();
             }
             cout << "   " << v->getInfo().getName() <<"(" <<v->getInfo().getCode() << ")"<<" max flow: " << flow << "\n";
-           // outFile << "   " << v->getInfo().getName() << "(" << v->getInfo().getCode() << ")" << " max flow: " << flow << "\n";
         }
     }
 
@@ -153,7 +144,7 @@ void Menu::maxAmountWater_AllCities(Network network) {
             " _____________________________________________ \n";
 
 
-    outFile.close();
+
     network.resetEdmondsKarp();
 
 
