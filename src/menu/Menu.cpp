@@ -406,9 +406,8 @@ void Menu::pumpingStationImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|        Pumping Station Impact               |\n"
             "                                               \n"
-            " > Not Essential                          [1]  \n"
-            " > Specific Pumping Station               [2]  \n"
-            " > All Pumping Stations                   [3]  \n"
+            " > Specific Pumping Station               [1]  \n"
+            " > All Pumping Stations                   [2]  \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
@@ -432,13 +431,9 @@ void Menu::pumpingStationImpact(Network network) {
             break;
         case 1:
             nextPage();
-            notEssentialPumpingStation(network);
-            break;
-        case 2:
-            nextPage();
             specificPumpingStationImpact(network);
             break;
-        case 3:
+        case 2:
             nextPage();
             allPumpingStationsImpact(network);
             break;
@@ -446,90 +441,103 @@ void Menu::pumpingStationImpact(Network network) {
 
 }
 
-void Menu::notEssentialPumpingStation(Network network) {
-    cout << " _____________________________________________ \n"
-            "|          Not Essential Pumping Station      |\n"
-            "                                               \n";
-
-    cout << "List of pumping stations:\n";
-    for (const auto& [key, vertex] : network.getVertices()) {
-        Info info = vertex->getInfo();
-        if (!info.getIsCity()) {
-            cout << "Pumping Station Code: " << info.getCode() << endl;
-        }
-    }
-
-    cout << "Enter the code of the pumping station you want to check: ";
-    string pumpingStationCode;
-    getline(cin, pumpingStationCode);
-
-    Vertex* pumpingStationVertex = network.findVertex(pumpingStationCode);
-
-    if (pumpingStationVertex == nullptr || pumpingStationVertex->getInfo().getIsCity()) {
-        cout << "Invalid pumping station code.\n";
-        return;
-    }
-
-    Info pumpingStationInfo = pumpingStationVertex->getInfo();
-
-    bool isDeliveryPossible = network.checkDeliveryCapacity(pumpingStationInfo);
-
-    if (isDeliveryPossible) {
-        cout << "Removing pumping station " << pumpingStationCode << " does not affect delivery capacity.\n";
-    } else {
-        cout << "Removing pumping station " << pumpingStationCode << " affects delivery capacity.\n";
-    }
-
-    cout << "_________________________________________________\n";
-}
 
 void Menu::specificPumpingStationImpact(Network network) {
-    cout << " _____________________________________________ \n"
-            "|       Specific Pumping Station Impact       |\n"
-            "                                               \n";
 
-    cout << "List of pumping stations:\n";
-    for (const auto& [key, vertex] : network.getVertices()) {
-        Info info = vertex->getInfo();
-        if (!info.getIsCity()) {
-            cout << "Pumping Station Code: " << info.getCode() << endl;
-        }
+    vector<string> notEssentialStations = network.findNotEssentialPumpingStations();
+
+    cout << "Available Pumping Stations:\n";
+    for (size_t i = 0; i < notEssentialStations.size(); ++i) {
+        cout << i + 1 << ". " << notEssentialStations[i] << "\n";
     }
 
-    cout << "Enter the code of the pumping station you want to analyze: ";
-    string pumpingStationCode;
-    getline(cin, pumpingStationCode);
+    cout << "\nEnter the number corresponding to the pumping station to analyze its impact: ";
+    int stationIndex;
+    cin >> stationIndex;
 
-    Vertex* pumpingStationVertex = network.findVertex(pumpingStationCode);
-
-    if (pumpingStationVertex == nullptr || pumpingStationVertex->getInfo().getIsCity()) {
-        cout << "Invalid pumping station code.\n";
+    if (stationIndex < 1 || stationIndex > static_cast<int>(notEssentialStations.size())) {
+        cout << "Invalid input. Please select a valid pumping station.\n";
+        specificPumpingStationImpact(network); // Reiniciar a função
         return;
     }
 
-    Info pumpingStationInfo = pumpingStationVertex->getInfo();
+    string selectedStation = notEssentialStations[stationIndex - 1];
 
-    auto impact = network.pumpingStationImpact(pumpingStationInfo);
+    bool isDeliveryCapacityMaintained = network.checkDeliveryCapacityAfterRemoval(selectedStation);
 
-    cout << "Impact on delivery capacity for each city:\n";
-    for (const auto& [cityCode, deficit] : impact) {
-        cout << "City Code: " << cityCode << ", Water Supply Deficit: " << deficit << endl;
+    if (isDeliveryCapacityMaintained) {
+        cout << "\nThe removal of pumping station " << selectedStation << " does not affect the delivery capacity to all the cities.\n";
+    } else {
+        cout << "\nThe removal of pumping station " << selectedStation << " affects the delivery capacity to some cities.\n";
+
+        cout << "\nMost Affected Cities:\n";
+        auto affectedCities = network.identifyMostAffectedCities(selectedStation);
+
+        map<string, string> cityNames = {
+                {"C_1", "Porto Moniz"},
+                {"C_2", "Santana"},
+                {"C_3", "Machico"},
+                {"C_4", "Funchal"},
+                {"C_5", "Santa Cruz"},
+                {"C_6", "Calheta"},
+                {"C_7", "Ponta do Sol"},
+                {"C_8", "Ribeira Brava"},
+                {"C_9", "Camara de Lobos"},
+                {"C_10", "Machico"}
+        };
+
+        cout << "\nCity Old Flow | New Flow | Deficit\n";
+        for (const auto& [cityCode, deficit] : affectedCities) {
+            double oldFlow = deficit;
+            double newFlow = network.calculateFlowAfterStationRemoval(selectedStation, cityCode) - oldFlow;
+            double waterDeficit = network.calculateWaterDeficit(cityCode, oldFlow, newFlow);
+
+            cout << cityCode << ": " << cityNames[cityCode] << " " << oldFlow << " " << newFlow << " " << waterDeficit << "\n";
+        }
+
     }
 
-    cout << "_________________________________________________\n";
+    cout << "\n_____________________________________________\n"
+            " > Back [0]                        > Quit [q]  \n"
+            " _____________________________________________ \n";
+
+    string cmd;
+    getline(cin, cmd); 
+    getline(cin, cmd);
+
+    while (cmd != "q" && cmd != "0") {
+        cout << "ERROR: Choose a valid option \n";
+        getline(cin, cmd);
+    }
+
+    if (cmd == "q") {
+        quit(); 
+    } else {
+        mainPage(network); 
+    }
 }
 
+
 void Menu::allPumpingStationsImpact(Network network) {
-    cout << " _____________________________________________ \n"
-            "|          All Pumping Stations Impact         |\n"
-            "                                               \n";
+    for (Vertex* vertex : network.getVertexSet()) {
+        Info info = vertex->getInfo();
 
-    auto impact = network.allPumpingStationsImpact();
+        if (info.getIsDeliverySite()) {
+            string stationCode = info.getCode();
 
-    cout << "Impact on delivery capacity for each city:\n";
-    for (const auto& [cityCode, deficit] : impact) {
-        cout << "City Code: " << cityCode << ", Water Supply Deficit: " << deficit << endl;
+            cout << "Processing pumping station: " << stationCode << endl;
+
+            map<string, double> affectedCities = network.identifyMostAffectedCities(stationCode);
+
+            cout << "Most affected cities by removing pumping station " << stationCode << ":" << endl;
+            if (affectedCities.empty()) {
+                cout << "No affected cities." << endl;
+            } else {
+                for (const auto& city : affectedCities) {
+                    cout << "City Code: " << city.first << ", Water Supply Deficit: " << city.second << endl;
+                }
+            }
+            cout << "---------------------------------------------" << endl;
+        }
     }
-
-    cout << "_________________________________________________\n";
 }

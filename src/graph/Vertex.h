@@ -141,5 +141,6 @@ protected:
     int queueIndex = 0; 		// required by MutablePriorityQueue and UFDS
 
     void deleteEdge(Edge *edge);
+
 };
 #endif //PROJETO1DA_VERTEX_H

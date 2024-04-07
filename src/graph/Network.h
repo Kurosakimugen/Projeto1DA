@@ -5,6 +5,7 @@
 #include <vector>
 #include "Edge.h"
 #include <unordered_map>
+#include <map>
 
 using namespace std;
 
@@ -153,6 +154,20 @@ public:
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 
     vector<Vertex *> getVertexSet();
+
+    double calculateFlowAfterStationRemoval(const string &stationCode, const string &cityCode);
+
+    vector<string> findNotEssentialPumpingStations();
+
+    void restoreNetwork();
+
+    std::map<string, double> identifyMostAffectedCities(const string &stationCode);
+
+    bool checkDeliveryCapacityAfterRemoval(const string &stationCode);
+
+    void temporarilyRemoveStation(const string &stationCode);
+
+    double calculateWaterDeficit(const string &cityCode, double oldFlow, double newFlow);
 };
 
 

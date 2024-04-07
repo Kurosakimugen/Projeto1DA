@@ -23,6 +23,8 @@ private:
     bool isWaterReservour = false;
     bool isCity = false;
     bool isDeliverySite = false;
+    bool isPumpingStation;
+    bool isEssential;
 
 public:
     /**
@@ -134,6 +136,16 @@ public:
     void setFlow(double nflow);
 
     double getFlow() const;
+
+    bool getIsPumpingStation() const;
+
+    void setIsPumpingStation(bool value);
+
+    bool getIsEssential() const;
+
+    void setIsEssential(bool value);
+
+    bool getIsDeliverySite() const;
 };
 
 

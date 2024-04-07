@@ -115,3 +115,23 @@ double Info::getFlow() const{
 void Info::setFlow(double nflow){
     flow = nflow;
 }
+
+bool Info::getIsPumpingStation() const {
+    return isPumpingStation;
+}
+
+void Info::setIsPumpingStation(bool value) {
+    isPumpingStation = value;
+}
+
+bool Info::getIsEssential() const {
+    return isEssential;
+}
+
+void Info::setIsEssential(bool value) {
+    isEssential = value;
+}
+
+bool Info::getIsDeliverySite() const {
+    return isDeliverySite;
+}

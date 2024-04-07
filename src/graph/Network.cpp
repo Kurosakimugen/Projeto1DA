@@ -5,6 +5,8 @@
 #include <iostream>
 #include <unordered_map>
 #include <queue>
+#include <map>
+
 
 
 
@@ -255,14 +257,14 @@ unordered_map<string, double> Network::verifyWaterSupply() {
 
 // T3.1
 
-std::vector<std::string> Network::removeReservoir(const std::string& reservoirCode) {
+vector<string> Network::removeReservoir(const string& reservoirCode) {
     Vertex* reservoirVertex = findVertex(reservoirCode);
     if (reservoirVertex == nullptr) {
-        std::cerr << "Reservoir with code " << reservoirCode << " not found!" << std::endl;
-        return std::vector<std::string>();
+        cerr << "Reservoir with code " << reservoirCode << " not found!" << endl;
+        return vector<string>();
     }
 
-    std::vector<std::string> affectedDeliverySites;
+    vector<string> affectedDeliverySites;
 
     for (Vertex* deliverySiteVertex : vertexSet) {
         if (deliverySiteVertex != reservoirVertex) {
@@ -300,134 +302,124 @@ bool Network::checkDeliveryCapacity(Info info) const {
     }
 }
 
-// T3.2 - Lidar com a remoção de uma estação de bombeamento específica
 
-void Network::removePumpingStation(const string &stationCode) {
-    auto it = vertexSet.begin();
-    while (it != vertexSet.end()) {
-        Vertex *vertex = *it;
-        Info vertexInfo = vertex->getInfo();
-        if (vertexInfo.getCode() == stationCode && vertexInfo.getIsCity() == false) {
-            vertex->removeOutgoingEdges();
-            vertexSet.erase(it);
-            delete vertex;
-            return;
-        }
-        it++;
+// T3.2
+
+void Network::temporarilyRemoveStation(const string& stationCode) {
+    Vertex* stationVertex = findVertex(stationCode);
+    if (stationVertex == nullptr) {
+        cerr << "Station with code " << stationCode << " not found!" << endl;
+        return;
     }
-    cerr << "Pumping station with code " << stationCode << " not found or is not a pumping station." << endl;
+
+    stationVertex->removeOutgoingEdges();
 }
 
+bool Network::checkDeliveryCapacityAfterRemoval(const string& stationCode) {
+    temporarilyRemoveStation(stationCode);
 
-void Network::checkImpactOfRemovingPumpingStation(const string &stationCode) {
-    removePumpingStation(stationCode);
+    for (Vertex* cityVertex : vertexSet) {
+        if (cityVertex->getInfo().getIsCity()) {
+            double demand = cityVertex->getInfo().getdemand();
+            double totalCapacity = 0.0;
 
-    vector<string> affectedCities;
-    for (Vertex *cityVertex : vertexSet) {
-        Info cityInfo = cityVertex->getInfo();
-        if (cityInfo.getIsCity()) {
-            double citySupplyDeficit = 0.0;
-            if (cityVertex->getAdj().empty()) {
-                citySupplyDeficit = cityInfo.getdemand();
-                affectedCities.push_back(cityInfo.getCode() + " - Deficit: " + to_string(citySupplyDeficit));
+            for (Edge* edge : cityVertex->getIncoming()) {
+                totalCapacity += edge->getWeight();
+            }
+
+            if (demand > totalCapacity) {
+                restoreNetwork();
+                return false;
             }
         }
     }
 
-    if (affectedCities.empty()) {
-        cout << "Removing pumping station " << stationCode << " does not affect the delivery capacity to any city." << endl;
-    } else {
-        cout << "Removing pumping station " << stationCode << " affects the delivery capacity to some cities:" << endl;
-        for (const string &city : affectedCities) {
-            cout << city << endl;
-        }
-    }
-
-    // adicionar código para recolocar a estação de bombeamento de volta à rede, se necessário
-
-    cout << "Restoring pumping station " << stationCode << " to the network." << endl;
+    restoreNetwork();
+    return true;
 }
 
-// T3.2 - Lidar com o impacto de todas as estações de bombeamento
 
-void Network::checkImpactOfAllPumpingStations() {
-    vector<string> affectedCities;
-    for (Vertex *pumpingStationVertex : vertexSet) {
-        Info stationInfo = pumpingStationVertex->getInfo();
-        if (!stationInfo.getIsCity()) {
-            string stationCode = stationInfo.getCode();
-            removePumpingStation(stationCode);
-            for (Vertex *cityVertex : vertexSet) {
-                Info cityInfo = cityVertex->getInfo();
-                if (cityInfo.getIsCity() && cityVertex->getAdj().empty()) {
-                    double citySupplyDeficit = cityInfo.getdemand();
-                    affectedCities.push_back(cityInfo.getCode() + " - Deficit: " + to_string(citySupplyDeficit));
-                }
+map<string, double> Network::identifyMostAffectedCities(const string& stationCode) {
+    map<string, double> affectedCities;
+
+    temporarilyRemoveStation(stationCode);
+
+    for (Vertex* cityVertex : vertexSet) {
+        if (cityVertex->getInfo().getIsCity()) {
+            double demand = cityVertex->getInfo().getdemand();
+            double totalCapacity = 0.0;
+
+            for (Edge* edge : cityVertex->getIncoming()) {
+                totalCapacity += edge->getWeight();
             }
-            addVertex(stationInfo);
+
+            double deficit = demand - totalCapacity;
+
+            if (deficit > 0) {
+                affectedCities[cityVertex->getInfo().getCode()] = deficit;
+            }
         }
     }
 
-    if (affectedCities.empty()) {
-        cout << "Removing all pumping stations does not affect the delivery capacity to any city." << endl;
-    } else {
-        cout << "Removing all pumping stations affects the delivery capacity to some cities:" << endl;
-        for (const string &city : affectedCities) {
-            cout << city << endl;
-        }
-    }
+    restoreNetwork();
+
+    return affectedCities;
 }
 
+void Network::restoreNetwork() {
+    build();
+}
 
-unordered_map<string, Vertex*> Network::getVertices() const {
-    unordered_map<string, Vertex*> vertices;
+vector<string> Network::findNotEssentialPumpingStations() {
+    vector<string> notEssentialStations;
+
     for (Vertex* vertex : vertexSet) {
         Info info = vertex->getInfo();
-        vertices[info.getCode()] = vertex;
+        if (info.getIsPumpingStation() && !info.getIsEssential()) {
+            notEssentialStations.push_back(info.getCode());
+        }
     }
-    return vertices;
+
+    return notEssentialStations;
+}
+
+double Network::calculateFlowAfterStationRemoval(const string& stationCode, const string& cityCode) {
+    Vertex* cityVertex = findVertex(cityCode);
+
+    if (cityVertex == nullptr) {
+        cerr << "City with code " << cityCode << " not found!" << endl;
+        return 0.0;
+    }
+
+    double newFlow = 0.0;
+
+    for (Edge* edge : cityVertex->getIncoming()) {
+        if (edge->getDest()->getInfo().getCode() != stationCode) {
+            newFlow += edge->getWeight(); // Adicionar o peso da aresta ao novo fluxo
+        }
+    }
+
+    return newFlow;
 }
 
 
-unordered_map<string, double> Network::pumpingStationImpact(const Info& pumpingStationInfo) const {
-    unordered_map<string, double> impact;
-    Vertex* pumpingStationVertex = findVertex(pumpingStationInfo.getCode());
-    if (pumpingStationVertex == nullptr) {
-        cerr << "Pumping station not found!" << endl;
-        return impact;
-    }
-    for (Edge* edge : pumpingStationVertex->getIncoming()) {
-        Vertex* cityVertex = edge->getOrig();
-        Info cityInfo = cityVertex->getInfo();
-        double deficit = cityInfo.getdemand() - edge->getWeight();
-        if (deficit > 0) {
-            impact[cityInfo.getCode()] = deficit;
-        }
-    }
-    return impact;
-}
-
-
-unordered_map<string, double> Network::allPumpingStationsImpact() const {
-    unordered_map<string, double> impact;
-    for (Vertex* vertex : vertexSet) {
-        Info info = vertex->getInfo();
-        if (!info.getIsCity()) {
-            continue;
-        }
-        double totalSupply = 0;
-        for (Edge* edge : vertex->getIncoming()) {
-            totalSupply += edge->getWeight();
-        }
-        if (totalSupply < info.getdemand()) {
-            impact[info.getCode()] = info.getdemand() - totalSupply;
-        }
-    }
-    return impact;
-}
 
 vector<Vertex *> Network::getVertexSet() {
     return this->vertexSet;
 }
 
 
+double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, double newFlow) {
+    Vertex* cityVertex = findVertex(cityCode);
+
+    if (cityVertex == nullptr) {
+        cerr << "City with code " << cityCode << " not found!" << endl;
+        return 0.0;
+    }
+
+    double demand = cityVertex->getInfo().getdemand();
+
+    double waterDeficit = demand - newFlow;
+
+    return waterDeficit;
+}
