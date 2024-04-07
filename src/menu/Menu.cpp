@@ -71,7 +71,7 @@ void Menu::mainPage(Network network) {
             break;
         case 6:
             nextPage();
-            //todo
+            pipelinefailureimpact(network);
             break;
     }
 }
@@ -542,5 +542,120 @@ void Menu::allPumpingStationsImpact(Network network) {
             }
             cout << "---------------------------------------------" << endl;
         }
+    }
+}
+
+// T3.3
+
+void Menu::pipelinefailureimpact(Network network) {
+    cout <<" _____________________________________________ \n"
+           "|        Pipeline Failure Impact               |\n"
+           "                                               \n"
+           " > All Pipelines                          [1]  \n"
+           " > Specific City                          [2]  \n"
+           "                                               \n"
+           " > Back [0]                        > Quit [q]  \n"
+           " _____________________________________________ \n";
+
+    string cmd;
+    getline(cin, cmd);
+
+    while (cmd != "q" && cmd != "1" && cmd != "2" ) {
+        cout << "ERROR: Choose a valid option \n";
+        getline(cin, cmd);
+    }
+
+    if (cmd == "q") quit();
+
+    int operation = stoi(cmd);
+
+    switch (operation) {
+        case 1:
+            nextPage();
+            AllPipelineImpact(network);
+            break;
+        case 2:
+            nextPage();
+            CityPipelineImpact(network);
+            break;
+    }
+}
+
+void Menu::AllPipelineImpact(Network network) {
+    cout << " _____________________________________________ \n"
+            "|          All Pipeline Failure Impact         |\n"
+            "                                               \n";
+
+    auto impact = network.eachPipelineImpact();
+
+    cout << "Impact on the flow of each city:\n";
+    for (const auto& [PipeID, Resultado] : impact) {
+        cout << Resultado << endl;
+    }
+
+    cout << " > Back [0]                        > Quit [q]    \n"
+            "_________________________________________________\n";
+    string cmd;
+    getline(cin, cmd);
+
+    while (cmd != "q" && cmd != "0" && cmd != "1" && cmd != "2" && cmd != "3") {
+        cout << "ERROR: Choose a valid option \n";
+        getline(cin, cmd);
+    }
+
+    if (cmd == "q") quit();
+
+    if (cmd == "0") {
+        nextPage();
+        pipelinefailureimpact(network);
+    }
+}
+
+void Menu::CityPipelineImpact(Network network) {
+    cout << " _____________________________________________ \n"
+            "|       Specific City Pipeline Impact         |\n"
+            "                                               \n";
+
+    cout << "List of Cities:\n";
+    for (const auto& [key, vertex] : network.getVertices()) {
+        Info info = vertex->getInfo();
+        if (info.getIsCity()) {
+            cout << "City Code: " << info.getCode() << endl;
+        }
+    }
+
+    cout << "Enter the code of the City you want to analyze: ";
+    string CityCode;
+    getline(cin, CityCode);
+
+    Vertex* CityVertex = network.findVertex(CityCode);
+
+    if (CityVertex == nullptr || !CityVertex->getInfo().getIsCity()) {
+        cout << "Invalid City code.\n";
+        return;
+    }
+
+    auto impact = network.CityPipelineImpact(CityVertex);
+
+    cout << "Impact on the flow of " << CityVertex->getInfo().getName() << "city:\n";
+    for (const auto& [PipeID, Resultado] : impact) {
+        cout << Resultado << endl;
+    }
+
+    cout << " > Back [0]                        > Quit [q]    \n"
+            "_________________________________________________\n";
+    string cmd;
+    getline(cin, cmd);
+
+    while (cmd != "q" && cmd != "0" && cmd != "1" && cmd != "2" && cmd != "3") {
+        cout << "ERROR: Choose a valid option \n";
+        getline(cin, cmd);
+    }
+
+    if (cmd == "q") quit();
+
+    if (cmd == "0") {
+        nextPage();
+        pipelinefailureimpact(network);
     }
 }

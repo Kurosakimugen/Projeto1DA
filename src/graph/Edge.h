@@ -32,6 +32,12 @@ public:
     double getWeight() const;
 
     /**
+     * Function to set the value of weight
+     * @param nweight
+     */
+    void setWeight(double nweight);
+
+    /**
      * Function to get the origin vertex
      * @return Node of origin
      */
@@ -76,6 +82,10 @@ public:
      */
     void setFlow(double flow);
 
+    /**
+     * Function to check if an edge is unidirectional or not
+     * @return true if yes , false otherwise
+     */
     bool getIsUnidirectional() const;
 
 protected:

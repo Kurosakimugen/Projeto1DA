@@ -13,6 +13,9 @@ double Edge::getWeight() const {
     return this->weight;
 }
 
+void Edge::setWeight(double nweight) {
+    weight = nweight;
+}
 
 Vertex * Edge::getOrig() const {
     return this->orig;

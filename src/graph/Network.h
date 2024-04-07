@@ -147,10 +147,24 @@ public:
 
     vector<Vertex *> getReservoirs() const;
 
+    /**
+     * Function that calculates the delivery capacity of certain water reservoir
+     * @param reservoirVertex
+     * @return list of the results
+     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity() const;
 
+    /**
+    * Function that calculates the flow after some change made on the graph
+    * @param cityVertex
+    * @return
+    */
     double calculateNewFlow(Vertex *cityVertex) const;
 
+    /**
+     * Function to calculate the delivery capacity
+     * @return a list with the results
+     */
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 
     vector<Vertex *> getVertexSet();
@@ -168,6 +182,19 @@ public:
     void temporarilyRemoveStation(const string &stationCode);
 
     double calculateWaterDeficit(const string &cityCode, double oldFlow, double newFlow);
+
+    /**
+     * Function that calculates the impact of each pipeline removal of the graph
+     * @return list with the results
+     */
+    unordered_map<string, string> eachPipelineImpact() ;
+
+    /**
+     * Function that checks which pipeline removal affects the city
+     * @param cityver
+     * @return list with the results
+     */
+    unordered_map<string, string> CityPipelineImpact(Vertex *cityver) ;
 };
 
 

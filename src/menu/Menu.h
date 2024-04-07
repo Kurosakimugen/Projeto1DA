@@ -100,6 +100,24 @@ public:
      */
     void allPumpingStationsImpact(Network network);
 
+    /**
+     * Function to start the label of pipeline failure
+     * @param network
+     */
+    void pipelinefailureimpact(Network network);
+
+    /**
+     * Function that start the process for the all pipeline failure
+     * @param network
+     */
+    void AllPipelineImpact(Network network);
+
+    /**
+     * Function that start the process for a city check pipeline failure
+     * @param network
+     */
+    void CityPipelineImpact(Network network);
+
 };
 
 

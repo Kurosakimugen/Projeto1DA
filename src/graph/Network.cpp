@@ -408,6 +408,14 @@ vector<Vertex *> Network::getVertexSet() {
     return this->vertexSet;
 }
 
+unordered_map<string, Vertex*> Network::getVertices() const {
+    unordered_map<string, Vertex*> vertices;
+    for (Vertex* vertex : vertexSet) {
+        Info info = vertex->getInfo();
+        vertices[info.getCode()] = vertex;
+    }
+    return vertices;
+}
 
 double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, double newFlow) {
     Vertex* cityVertex = findVertex(cityCode);
@@ -422,4 +430,135 @@ double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, do
     double waterDeficit = demand - newFlow;
 
     return waterDeficit;
+}
+
+// T3.3 Lidar com impacto de remoção de pipelines a nivel geral ou especifico para uma cidade
+
+unordered_map<string, string> Network::eachPipelineImpact() {
+    unordered_map<string, string> impact;
+
+    // Cria uma lista com os flows originais
+    unordered_map<string, double> originalFlows;
+    for (Vertex* cityVertex : vertexSet) {
+        if (cityVertex->getInfo().getIsCity()) {
+            originalFlows[cityVertex->getInfo().getCode()] = calculateActualFlow(cityVertex);
+        }
+    }
+
+    for (Vertex* vertex : vertexSet) {
+        for (Edge* edge : vertex->getAdj()) {
+            double originalWeight = edge->getWeight();
+            edge->setWeight(0.0);
+
+            // Compara o impacto do flow
+            for (const auto& [cityCode, originalFlow] : originalFlows) {
+                Vertex* cityVertex = findVertex(cityCode);
+                double newFlow = calculateNewFlow(cityVertex);
+                double flowDifference = originalFlow - newFlow;
+
+                string origId = edge->getOrig()->getInfo().getCode();
+                string destId = edge->getDest()->getInfo().getCode();
+                string pipeId = origId + "->" + destId;
+
+                if (flowDifference != 0) {
+                    if (impact.find(pipeId) == impact.end()) {
+                        impact[pipeId] = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                    } else {
+                        impact[pipeId] += " | " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference);
+                    }
+                }
+            }
+
+            edge->setWeight(originalWeight);
+        }
+    }
+
+    return impact;
+}
+
+
+unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
+    unordered_map<string, string> impact;
+    double originalFlow = calculateActualFlow(cityVertex);
+
+    for (Vertex* vertex : vertexSet) {
+        for (Edge* edge : vertex->getAdj()) {
+            double originalWeight = edge->getWeight();
+            edge->setWeight(0.0);
+
+            double newFlow = calculateNewFlow(cityVertex);
+            double flowDifference = originalFlow - newFlow;
+
+            string origId = edge->getOrig()->getInfo().getCode();
+            string destId = edge->getDest()->getInfo().getCode();
+            string pipeId = origId + "->" + destId;
+
+            if (flowDifference != 0) {
+                string impactDescription = pipeId + " affects: " + cityVertex->getInfo().getName() + " by " + to_string(flowDifference) + ".";
+                impact[pipeId] = impactDescription;
+            }
+
+            edge->setWeight(originalWeight);
+        }
+    }
+
+    return impact;
+}
+
+//Calculo de flow sem considerar os limites
+
+double Network::calculateActualFlow(Vertex* cityVertex) {
+    queue<Vertex*> bfsQueue;
+
+    bfsQueue.push(cityVertex);
+    cityVertex->setVisited(true);
+    double actualFlow = 0.0;
+
+    while (!bfsQueue.empty()) {
+        Vertex* currentVertex = bfsQueue.front();
+        bfsQueue.pop();
+
+        for (Edge* edge : currentVertex->getIncoming()) {
+            actualFlow += edge->getWeight();
+            Vertex* originVertex = edge->getOrig();
+            if (!originVertex->isVisited()) {
+                bfsQueue.push(originVertex);
+                originVertex->setVisited(true);
+            }
+        }
+    }
+
+    for (Vertex* vertex : vertexSet) {
+        vertex->setVisited(false);
+    }
+
+    return actualFlow;
+}
+
+double Network::calculateNewFlow(Vertex* cityVertex) const {
+    queue<Vertex*> bfsQueue;
+
+    bfsQueue.push(cityVertex);
+    cityVertex->setVisited(true);
+    double newFlow = 0.0;
+
+    while (!bfsQueue.empty()) {
+        Vertex* currentVertex = bfsQueue.front();
+        bfsQueue.pop();
+
+        for (Edge* edge : currentVertex->getIncoming()) {
+            newFlow += edge->getWeight();
+            Vertex* originVertex = edge->getOrig();
+            if (!originVertex->isVisited()) {
+                bfsQueue.push(originVertex);
+                originVertex->setVisited(true);
+            }
+        }
+    }
+
+    for (Vertex* vertex : vertexSet) {
+        vertex->setVisited(false);
+    }
+
+    return newFlow;
 }
