@@ -15,9 +15,7 @@ private:
     int id; /*currently ignoring ID's, can be added later if necessary*/
 
     double maximumDelivery;
-    double capacity;
     double demand;
-    double flow;
 
     // the appropriate one is set to true when reading, the rest stays false
     bool isWaterReservour = false;
@@ -84,18 +82,6 @@ public:
     void setName(string nName);
 
     /**
-     * @brief Function to get the value of Capacity
-     * @return Capacity value
-     */
-    double getCapacity();
-
-    /**
-     * @brief Function to change the value of Capacity
-     * @param nCapacity
-     */
-    void setCapacity(double nCapacity);
-
-    /**
      * @brief Function to get the value of Population
      * @return Population value
      */
@@ -133,19 +119,33 @@ public:
      */
     bool getIsWaterReservour() const;
 
-    void setFlow(double nflow);
-
-    double getFlow() const;
-
+    /**
+    * Function to get if a node is a pumping station or not
+    * @return true if yes or false otherwise
+    */
     bool getIsPumpingStation() const;
 
+    /**
+    * Function to set if a node is pumpingstation or not
+    * @param value
+    */
     void setIsPumpingStation(bool value);
 
+    /**
+    * Function to know if a node is essential or not
+    * @return yes if true or false otherwise
+    */
     bool getIsEssential() const;
 
+    /**
+    * Function to set if a node is essential or not
+    * @param value
+    */
     void setIsEssential(bool value);
 
     bool getIsDeliverySite() const;
+
+    double getMaximumDelivery() const;
 };
 
 

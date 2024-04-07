@@ -1,4 +1,5 @@
 #include "Network.h"
+#include "../algorithms/Algorithms.h"
 
 #include <fstream>
 #include <sstream>
@@ -154,8 +155,9 @@ void Network::read_pipesFile(string pipesFilename) {
 
         double capacity = stod(capacityString);
         bool isUnidirectional = direction == "1";
+        double flow = 0;
 
-        addEdge(servicePointA,servicePointB,capacity, isUnidirectional);
+        addEdge(servicePointA,servicePointB,capacity, isUnidirectional,flow);
 
     }
     file.close();
@@ -199,13 +201,13 @@ bool Network::addVertex(Info &in) {
 }
 
 
-bool Network::addEdge(const string &srcCode, const string &destCode, double w,bool isUniDirectional) {
+bool Network::addEdge(const string &srcCode, const string &destCode, double w,bool isUniDirectional, double flow) {
 
     auto v1 = findVertex(srcCode);
     auto v2 = findVertex(destCode);
     if (v1 == nullptr || v2 == nullptr)
         return false;
-    v1->addEdge(v2, w, isUniDirectional);
+    v1->addEdge(v2, w, isUniDirectional, flow);
     return true;
 }
 
@@ -220,7 +222,7 @@ unordered_map<string, double> Network::verifyWaterSupply() {
         if (reservoirInfo.getIsWaterReservour()) {
             for (Edge* edge : reservoirVertex->getAdj()) {
                 Vertex* servicePoint = edge->getDest();
-                double capacity = edge->getWeight();
+                double capacity = edge->getCapacity();
                 totalCapacities[servicePoint->getInfo().getCode()] += capacity;
             }
         }
@@ -257,50 +259,7 @@ unordered_map<string, double> Network::verifyWaterSupply() {
 
 // T3.1
 
-vector<string> Network::removeReservoir(const string& reservoirCode) {
-    Vertex* reservoirVertex = findVertex(reservoirCode);
-    if (reservoirVertex == nullptr) {
-        cerr << "Reservoir with code " << reservoirCode << " not found!" << endl;
-        return vector<string>();
-    }
 
-    vector<string> affectedDeliverySites;
-
-    for (Vertex* deliverySiteVertex : vertexSet) {
-        if (deliverySiteVertex != reservoirVertex) {
-            deliverySiteVertex->removeEdge(reservoirCode);
-
-            if (!checkDeliveryCapacity(deliverySiteVertex->getInfo())) {
-                affectedDeliverySites.push_back(deliverySiteVertex->getInfo().getCode());
-            }
-
-            addEdge(deliverySiteVertex->getInfo().getCode(), reservoirCode, 0.0, false);
-        }
-    }
-
-    return affectedDeliverySites;
-}
-
-
-
-bool Network::checkDeliveryCapacity(Info info) const {
-    Vertex* currentVertex = findVertex(info.getCode());
-    if (currentVertex != nullptr) {
-        if (currentVertex->getInfo().getIsWaterReservour()) {
-            double capacity = currentVertex->getInfo().getCapacity();
-            double demand = currentVertex->getInfo().getdemand();
-            if (capacity >= demand) {
-                return true;
-            } else {
-                return false;
-            }
-        } else {
-            return true;
-        }
-    } else {
-        return false;
-    }
-}
 
 
 // T3.2
@@ -324,7 +283,7 @@ bool Network::checkDeliveryCapacityAfterRemoval(const string& stationCode) {
             double totalCapacity = 0.0;
 
             for (Edge* edge : cityVertex->getIncoming()) {
-                totalCapacity += edge->getWeight();
+                totalCapacity += edge->getCapacity();
             }
 
             if (demand > totalCapacity) {
@@ -350,7 +309,7 @@ map<string, double> Network::identifyMostAffectedCities(const string& stationCod
             double totalCapacity = 0.0;
 
             for (Edge* edge : cityVertex->getIncoming()) {
-                totalCapacity += edge->getWeight();
+                totalCapacity += edge->getCapacity();
             }
 
             double deficit = demand - totalCapacity;
@@ -391,11 +350,13 @@ double Network::calculateFlowAfterStationRemoval(const string& stationCode, cons
         return 0.0;
     }
 
+    edmondsKarp(this, "MSrc", "MSink");
+
     double newFlow = 0.0;
 
     for (Edge* edge : cityVertex->getIncoming()) {
         if (edge->getDest()->getInfo().getCode() != stationCode) {
-            newFlow += edge->getWeight(); // Adicionar o peso da aresta ao novo fluxo
+            newFlow += (edge->getCapacity() - edge->getFlow());
         }
     }
 
@@ -404,18 +365,11 @@ double Network::calculateFlowAfterStationRemoval(const string& stationCode, cons
 
 
 
+
 vector<Vertex *> Network::getVertexSet() {
     return this->vertexSet;
 }
 
-unordered_map<string, Vertex*> Network::getVertices() const {
-    unordered_map<string, Vertex*> vertices;
-    for (Vertex* vertex : vertexSet) {
-        Info info = vertex->getInfo();
-        vertices[info.getCode()] = vertex;
-    }
-    return vertices;
-}
 
 double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, double newFlow) {
     Vertex* cityVertex = findVertex(cityCode);
@@ -433,7 +387,7 @@ double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, do
 }
 
 // T3.3 Lidar com impacto de remoção de pipelines a nivel geral ou especifico para uma cidade
-
+/*
 unordered_map<string, string> Network::eachPipelineImpact() {
     unordered_map<string, string> impact;
 
@@ -447,8 +401,7 @@ unordered_map<string, string> Network::eachPipelineImpact() {
 
     for (Vertex* vertex : vertexSet) {
         for (Edge* edge : vertex->getAdj()) {
-            double originalWeight = edge->getWeight();
-            edge->setWeight(0.0);
+            double originalWeight = edge->getCapacity();
 
             // Compara o impacto do flow
             for (const auto& [cityCode, originalFlow] : originalFlows) {
@@ -469,13 +422,13 @@ unordered_map<string, string> Network::eachPipelineImpact() {
                 }
             }
 
-            edge->setWeight(originalWeight);
+            edge->setCapacity(originalWeight);
         }
     }
 
     return impact;
 }
-
+*/
 
 unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
     unordered_map<string, string> impact;
@@ -483,8 +436,8 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
 
     for (Vertex* vertex : vertexSet) {
         for (Edge* edge : vertex->getAdj()) {
-            double originalWeight = edge->getWeight();
-            edge->setWeight(0.0);
+            double originalWeight = edge->getCapacity();
+            edge->setCapacity(0.0);
 
             double newFlow = calculateNewFlow(cityVertex);
             double flowDifference = originalFlow - newFlow;
@@ -498,7 +451,7 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
                 impact[pipeId] = impactDescription;
             }
 
-            edge->setWeight(originalWeight);
+            edge->setCapacity(originalWeight);
         }
     }
 
@@ -519,7 +472,7 @@ double Network::calculateActualFlow(Vertex* cityVertex) {
         bfsQueue.pop();
 
         for (Edge* edge : currentVertex->getIncoming()) {
-            actualFlow += edge->getWeight();
+            actualFlow += edge->getCapacity();
             Vertex* originVertex = edge->getOrig();
             if (!originVertex->isVisited()) {
                 bfsQueue.push(originVertex);
@@ -547,7 +500,7 @@ double Network::calculateNewFlow(Vertex* cityVertex) const {
         bfsQueue.pop();
 
         for (Edge* edge : currentVertex->getIncoming()) {
-            newFlow += edge->getWeight();
+            newFlow += edge->getCapacity();
             Vertex* originVertex = edge->getOrig();
             if (!originVertex->isVisited()) {
                 bfsQueue.push(originVertex);
@@ -561,4 +514,100 @@ double Network::calculateNewFlow(Vertex* cityVertex) const {
     }
 
     return newFlow;
+}
+
+
+void Network::createMasterSource() {
+    string masterSourceCode = "MSrc";
+
+    Info info = Info();
+    info.setName("Main Source");
+    info.setCode("MSrc");
+
+
+    this->addVertex(info);
+
+    for (auto v: this->vertexSet) {
+        if (v->getInfo().getIsWaterReservour()) {
+            string wrCode = v->getInfo().getCode();
+
+            double maxDelivery = v->getInfo().getMaximumDelivery();
+
+            double flow = maxDelivery;
+
+            this->addEdge(masterSourceCode, wrCode, maxDelivery, true, flow);
+        }
+    }
+
+}
+
+void Network::createMasterSink() {
+    string masterSinkCode = "MSink";
+
+    Info info = Info();
+    info.setName("Main Sink");
+    info.setCode("MSink");
+
+    this->addVertex(info);
+
+    for(auto v : this->vertexSet) {
+        if(v->getInfo().getIsCity()){
+            string dsCode =v->getInfo().getCode();
+
+            double demand = v->getInfo().getdemand();
+
+            double flow = 0;
+
+            this->addEdge(dsCode, masterSinkCode, demand, true, flow);
+        }
+    }
+
+}
+
+bool Network::removeVertex(string infoCode) {
+    for (auto it = vertexSet.begin(); it != vertexSet.end(); it++) {
+        if ((*it)->getInfo().getCode() == infoCode) {
+            auto v = *it;
+            v->removeOutgoingEdges();
+            for (auto u : vertexSet) {
+                u->removeEdge(v->getInfo().getCode());
+            }
+            vertexSet.erase(it);
+            delete v;
+            return true;
+        }
+    }
+    return false;
+}
+
+void Network::resetEdmondsKarp() {
+    removeVertex("MSrc");
+    removeVertex("MSink");
+
+    for (auto v : vertexSet) {
+        for (auto e: v->getAdj()) {
+            e->setFlow(0);
+        }
+    }
+}
+
+void Network::runEdmondsKarp() {
+    createMasterSource();
+    createMasterSink();
+
+    edmondsKarp(this,"MSrc", "MSink");
+
+}
+
+double Network::calculateCityMaxFlow(Vertex *cityVertex) {
+    runEdmondsKarp();
+    double flow = 0;
+
+    for(auto e : cityVertex->getIncoming()){
+        flow += e->getFlow();
+    }
+
+    resetEdmondsKarp();
+
+    return flow;
 }

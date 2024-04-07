@@ -13,10 +13,20 @@ public:
      * Edge Constructor
      * @param orig
      * @param dest
-     * @param weight
+     * @param capacity
      * @param isUnidirectional
      */
-    Edge(Vertex* orig, Vertex* dest, double weight, bool isUnidirectional);
+    Edge(Vertex* orig, Vertex* dest, double capacity, bool isUnidirectional);
+
+    /**
+    * Edge Constructor with flow
+    * @param orig
+    * @param dest
+    * @param capacity
+    * @param isUnidirectional
+    * @param flow
+    */
+    Edge(Vertex* orig, Vertex* dest, double capacity, bool isUnidirectional, double flow);
 
 
     /**
@@ -29,13 +39,7 @@ public:
      * Function to get the value of weight
      * @return weight value
      */
-    double getWeight() const;
-
-    /**
-     * Function to set the value of weight
-     * @param nweight
-     */
-    void setWeight(double nweight);
+    double getCapacity() const;
 
     /**
      * Function to get the origin vertex
@@ -83,14 +87,16 @@ public:
     void setFlow(double flow);
 
     /**
-     * Function to check if an edge is unidirectional or not
-     * @return true if yes , false otherwise
-     */
+    * Function to get if an edge is
+    */
     bool getIsUnidirectional() const;
+
+
+    void setCapacity(double d);
 
 protected:
     Vertex *dest; // destination vertex
-    double weight; // edge weight, can also be used for capacity
+    double capacity; // edge weight, can also be used for capacity
 
     // auxiliary fields
     bool selected = false;
@@ -103,6 +109,7 @@ protected:
     bool isUnidirectional;
 
     void setIsUnidirectional(bool value);
+
 };
 
 #endif // EDGE_H

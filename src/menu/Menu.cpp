@@ -118,15 +118,22 @@ void Menu::maxAmountWater(Network network) {
 
 // T2.1
 void Menu::maxAmountWater_AllCities(Network network) {
-    //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA TDS AS CITIES E DAR PRINT
+    //TODO
+    network.runEdmondsKarp();
 
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
-            "                                               \n"
+            "                                               \n";
+
+
             " nothing happens                               \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
+
+
+    network.resetEdmondsKarp();
+
 
     string cmd;
     getline(cin, cmd);
@@ -148,41 +155,14 @@ void Menu::maxAmountWater_AllCities(Network network) {
 
 // T2.1
 void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
-    //TODO-POR AQUI O RESULTADO DE NETWORK.EDMONDSKARP PARA UMA CITY E DAR PRINT
 
-    //WR sao sources
-    //C are sinks, neste caso so ha uma sink
-    //maxflow is the sum of all bottleneck values of the sink
-
-    string targetCode = cityVertex->getInfo().getCode();
-    double maxFlow = 0;
-
-    for(auto v : network.getVertexSet()){
-        if(v->getInfo().getIsWaterReservour()){
-            string sourceCode = v->getInfo().getCode();
-            edmondsKarp(&network,sourceCode,targetCode);
-
-
-            double maxFlowContender = 0;
-
-            maxFlowContender = cityVertex->getInfo().getFlow();
-            /*
-            for(auto e : cityVertex->getIncoming()){
-                maxFlowContender += e->getFlow();
-            }*/
-
-            if(maxFlowContender > maxFlow) maxFlow = maxFlowContender;
-        }
-
-    }
-
-
+    double maxFlow = network.calculateCityMaxFlow(cityVertex);
 
 
     cout << " _____________________________________________ \n"
-            "|       Calculate Max Amount of Water         |\n"
+
             "                                               \n"
-            "  city's max flow is:         "<< maxFlow <<"  \n"
+            " "<< cityVertex->getInfo().getName() << "'s max flow is:         "<< maxFlow <<"  \n"
             "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
@@ -352,7 +332,7 @@ void Menu::specificReservoirImpact(Network network) {
     getline(cin, cmd);
 
     Info reservoirInfo("", "", 0, cmd, 0);
-    bool isDeliveryPossible = network.checkDeliveryCapacity(reservoirInfo);
+    bool isDeliveryPossible = true ;//network.checkDeliveryCapacity(reservoirInfo);
 
     if (isDeliveryPossible) {
         cout << "The delivery capacity is not affected by removing reservoir " << cmd << ".\n";
@@ -460,7 +440,7 @@ void Menu::specificPumpingStationImpact(Network network) {
 
     if (stationIndex < 1 || stationIndex > static_cast<int>(notEssentialStations.size())) {
         cout << "Invalid input. Please select a valid pumping station.\n";
-        specificPumpingStationImpact(network); // Reiniciar a função
+        specificPumpingStationImpact(network);
         return;
     }
 
@@ -492,7 +472,7 @@ void Menu::specificPumpingStationImpact(Network network) {
         cout << "\nCity Old Flow | New Flow | Deficit\n";
         for (const auto& [cityCode, deficit] : affectedCities) {
             double oldFlow = deficit;
-            double newFlow = network.calculateFlowAfterStationRemoval(selectedStation, cityCode) - oldFlow;
+            double newFlow = network.calculateFlowAfterStationRemoval(selectedStation, cityCode);
             double waterDeficit = network.calculateWaterDeficit(cityCode, oldFlow, newFlow);
 
             cout << cityCode << ": " << cityNames[cityCode] << " " << oldFlow << " " << newFlow << " " << waterDeficit << "\n";
@@ -522,26 +502,26 @@ void Menu::specificPumpingStationImpact(Network network) {
 
 
 void Menu::allPumpingStationsImpact(Network network) {
-    for (Vertex* vertex : network.getVertexSet()) {
-        Info info = vertex->getInfo();
+    vector<string> notEssentialStations = network.findNotEssentialPumpingStations();
 
-        if (info.getIsDeliverySite()) {
-            string stationCode = info.getCode();
+    for (const string& stationCode : notEssentialStations) {
+        cout << "Processing pumping station: " << stationCode << endl;
 
-            cout << "Processing pumping station: " << stationCode << endl;
+        map<string, double> affectedCities = network.identifyMostAffectedCities(stationCode);
 
-            map<string, double> affectedCities = network.identifyMostAffectedCities(stationCode);
+        cout << "Most affected cities by removing pumping station " << stationCode << ":" << endl;
+        if (affectedCities.empty()) {
+            cout << "No affected cities." << endl;
+        } else {
+            for (const auto& city : affectedCities) {
+                double oldFlow = network.calculateFlowAfterStationRemoval(stationCode, city.first);
+                double newFlow = city.second;
+                double waterDeficit = network.calculateWaterDeficit(city.first, oldFlow, newFlow);
 
-            cout << "Most affected cities by removing pumping station " << stationCode << ":" << endl;
-            if (affectedCities.empty()) {
-                cout << "No affected cities." << endl;
-            } else {
-                for (const auto& city : affectedCities) {
-                    cout << "City Code: " << city.first << ", Water Supply Deficit: " << city.second << endl;
-                }
+                cout << "City Code: " << city.first << ", Water Supply Deficit: " << waterDeficit << endl;
             }
-            cout << "---------------------------------------------" << endl;
         }
+        cout << "---------------------------------------------" << endl;
     }
 }
 
@@ -572,15 +552,16 @@ void Menu::pipelinefailureimpact(Network network) {
     switch (operation) {
         case 1:
             nextPage();
-            AllPipelineImpact(network);
+            //AllPipelineImpact(network);
             break;
         case 2:
             nextPage();
-            CityPipelineImpact(network);
+            //CityPipelineImpact(network);
             break;
     }
 }
 
+/*
 void Menu::AllPipelineImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|          All Pipeline Failure Impact         |\n"
@@ -659,3 +640,4 @@ void Menu::CityPipelineImpact(Network network) {
         pipelinefailureimpact(network);
     }
 }
+ */

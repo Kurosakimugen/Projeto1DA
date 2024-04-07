@@ -1,20 +1,21 @@
 #include "Edge.h"
 
 
-Edge::Edge(Vertex *orig, Vertex *dest, double weight, bool isUnidirectional): orig(orig), dest(dest), weight(weight), isUnidirectional(isUnidirectional) {}
+Edge::Edge(Vertex *orig, Vertex *dest, double capacity, bool isUnidirectional): orig(orig), dest(dest), capacity(capacity), isUnidirectional(isUnidirectional) {}
 
+Edge::Edge(Vertex *orig, Vertex *dest, double capacity, bool isUnidirectional, double flow): orig(orig), dest(dest), capacity(capacity), isUnidirectional(isUnidirectional), flow(flow) {}
 
 Vertex * Edge::getDest() const {
     return this->dest;
 }
 
 
-double Edge::getWeight() const {
-    return this->weight;
+double Edge::getCapacity() const {
+    return this->capacity;
 }
 
-void Edge::setWeight(double nweight) {
-    weight = nweight;
+void Edge::setCapacity(double nweight) {
+   capacity = nweight;
 }
 
 Vertex * Edge::getOrig() const {
@@ -58,3 +59,5 @@ bool Edge::getIsUnidirectional() const {
 void Edge::setIsUnidirectional(bool value) {
     isUnidirectional = value;
 }
+
+
