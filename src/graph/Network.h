@@ -144,13 +144,9 @@ public:
      */
     unordered_map<string, double> allPumpingStationsImpact() const;
 
-    double calculateActualFlow(Vertex *cityVertex);
-
     vector<Vertex *> getReservoirs() const;
 
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity() const;
-
-    double calculateNewFlow(Vertex *cityVertex) const;
 
     vector<pair<std::string, std::pair<double, double>>> calculateDeliveryCapacity(Vertex *reservoirVertex) const;
 
@@ -179,7 +175,18 @@ public:
     void runEdmondsKarp();
     void resetEdmondsKarp();
 
-    unordered_map<string, string> CityPipelineImpact(Vertex *cityVertex);
+    /**
+     * Function that calculates the impact of each pipeline removal of the graph
+     * @return list with the results
+     */
+    unordered_map<string, string> eachPipelineImpact() ;
+
+    /**
+     * Function that checks which pipeline removal affects the city
+     * @param cityver
+     * @return list with the results
+     */
+    unordered_map<string, string> CityPipelineImpact(Vertex *cityver) ;
 };
 
 

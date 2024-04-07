@@ -8,9 +8,6 @@
 #include <queue>
 #include <map>
 
-
-
-
 void Network::read_reservoirsFile(string reservoirFilename) {
     ifstream file(reservoirFilename);
 
@@ -387,7 +384,7 @@ double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, do
 }
 
 // T3.3 Lidar com impacto de remoção de pipelines a nivel geral ou especifico para uma cidade
-/*
+
 unordered_map<string, string> Network::eachPipelineImpact() {
     unordered_map<string, string> impact;
 
@@ -395,7 +392,7 @@ unordered_map<string, string> Network::eachPipelineImpact() {
     unordered_map<string, double> originalFlows;
     for (Vertex* cityVertex : vertexSet) {
         if (cityVertex->getInfo().getIsCity()) {
-            originalFlows[cityVertex->getInfo().getCode()] = calculateActualFlow(cityVertex);
+            originalFlows[cityVertex->getInfo().getCode()] = calculateCityMaxFlow(cityVertex);
         }
     }
 
@@ -406,7 +403,7 @@ unordered_map<string, string> Network::eachPipelineImpact() {
             // Compara o impacto do flow
             for (const auto& [cityCode, originalFlow] : originalFlows) {
                 Vertex* cityVertex = findVertex(cityCode);
-                double newFlow = calculateNewFlow(cityVertex);
+                double newFlow = calculateCityMaxFlow(cityVertex);
                 double flowDifference = originalFlow - newFlow;
 
                 string origId = edge->getOrig()->getInfo().getCode();
@@ -428,18 +425,18 @@ unordered_map<string, string> Network::eachPipelineImpact() {
 
     return impact;
 }
-*/
+
 
 unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
     unordered_map<string, string> impact;
-    double originalFlow = calculateActualFlow(cityVertex);
+    double originalFlow = calculateCityMaxFlow(cityVertex);
 
     for (Vertex* vertex : vertexSet) {
         for (Edge* edge : vertex->getAdj()) {
             double originalWeight = edge->getCapacity();
             edge->setCapacity(0.0);
 
-            double newFlow = calculateNewFlow(cityVertex);
+            double newFlow = calculateCityMaxFlow(cityVertex);
             double flowDifference = originalFlow - newFlow;
 
             string origId = edge->getOrig()->getInfo().getCode();
@@ -457,65 +454,6 @@ unordered_map<string, string> Network::CityPipelineImpact(Vertex* cityVertex) {
 
     return impact;
 }
-
-//Calculo de flow sem considerar os limites
-
-double Network::calculateActualFlow(Vertex* cityVertex) {
-    queue<Vertex*> bfsQueue;
-
-    bfsQueue.push(cityVertex);
-    cityVertex->setVisited(true);
-    double actualFlow = 0.0;
-
-    while (!bfsQueue.empty()) {
-        Vertex* currentVertex = bfsQueue.front();
-        bfsQueue.pop();
-
-        for (Edge* edge : currentVertex->getIncoming()) {
-            actualFlow += edge->getCapacity();
-            Vertex* originVertex = edge->getOrig();
-            if (!originVertex->isVisited()) {
-                bfsQueue.push(originVertex);
-                originVertex->setVisited(true);
-            }
-        }
-    }
-
-    for (Vertex* vertex : vertexSet) {
-        vertex->setVisited(false);
-    }
-
-    return actualFlow;
-}
-
-double Network::calculateNewFlow(Vertex* cityVertex) const {
-    queue<Vertex*> bfsQueue;
-
-    bfsQueue.push(cityVertex);
-    cityVertex->setVisited(true);
-    double newFlow = 0.0;
-
-    while (!bfsQueue.empty()) {
-        Vertex* currentVertex = bfsQueue.front();
-        bfsQueue.pop();
-
-        for (Edge* edge : currentVertex->getIncoming()) {
-            newFlow += edge->getCapacity();
-            Vertex* originVertex = edge->getOrig();
-            if (!originVertex->isVisited()) {
-                bfsQueue.push(originVertex);
-                originVertex->setVisited(true);
-            }
-        }
-    }
-
-    for (Vertex* vertex : vertexSet) {
-        vertex->setVisited(false);
-    }
-
-    return newFlow;
-}
-
 
 void Network::createMasterSource() {
     string masterSourceCode = "MSrc";
@@ -610,4 +548,13 @@ double Network::calculateCityMaxFlow(Vertex *cityVertex) {
     resetEdmondsKarp();
 
     return flow;
+}
+
+unordered_map<string, Vertex*> Network::getVertices() const {
+    unordered_map<string, Vertex*> vertices;
+    for (Vertex* vertex : vertexSet) {
+        Info info = vertex->getInfo();
+        vertices[info.getCode()] = vertex;
+    }
+    return vertices;
 }

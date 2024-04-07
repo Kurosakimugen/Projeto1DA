@@ -118,16 +118,24 @@ void Menu::maxAmountWater(Network network) {
 
 // T2.1
 void Menu::maxAmountWater_AllCities(Network network) {
-    //TODO
     network.runEdmondsKarp();
-
+    
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
             "                                               \n";
 
+    for(auto v : network.getVertexSet()){
+        double flow = 0;
+        if(v->getInfo().getIsCity()){
 
-            " nothing happens                               \n"
-            "                                               \n"
+            for(auto e : v->getIncoming()){
+                flow += e->getFlow();
+            }
+            cout << "  " << v->getInfo().getName() << " has a max flow of: " << flow << "\n";
+        }
+    }
+
+    cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
 
@@ -552,16 +560,16 @@ void Menu::pipelinefailureimpact(Network network) {
     switch (operation) {
         case 1:
             nextPage();
-            //AllPipelineImpact(network);
+            AllPipelineImpact(network);
             break;
         case 2:
             nextPage();
-            //CityPipelineImpact(network);
+            CityPipelineImpact(network);
             break;
     }
 }
 
-/*
+
 void Menu::AllPipelineImpact(Network network) {
     cout << " _____________________________________________ \n"
             "|          All Pipeline Failure Impact         |\n"
@@ -640,4 +648,3 @@ void Menu::CityPipelineImpact(Network network) {
         pipelinefailureimpact(network);
     }
 }
- */
