@@ -69,12 +69,13 @@ void Network::read_citiesFile(string citiesFilename) {
             getline (iss, PopulationString)) {
 
             //retirar isto para ler o total
+            /*
             PopulationString = PopulationString.substr(1); // Remove the first character (leading double quote)
             if (PopulationString.back() == '"') { // Check if the last character is a double quote
                 PopulationString.pop_back(); // Remove the last character (trailing double quote)
             }
             PopulationString.replace(PopulationString.find(","), 1, "");
-
+            */
 
             int Population = stoi(PopulationString);
             int ID = stoi(IdString);
@@ -109,8 +110,8 @@ void Network::read_stationsFile(string stationsFilename) {
         istringstream iss(line);
         string IdString, Code,temp;
         if (getline (iss, IdString, ',') &&
-            getline (iss, Code, ',') &&
-            getline (iss, temp, ',') ){
+            getline (iss, Code, ',') /*&&
+            getline (iss, temp, ',')*/ ){
 
             //retirar o temp caso seja para ler o total
 
@@ -148,7 +149,7 @@ void Network::read_pipesFile(string pipesFilename) {
               getline(iss, servicePointB, ',') &&
               getline(iss, capacityString, ',') &&
               getline(iss, direction, ','))) {
-            cerr << "Error parsing line: " << line << endl;
+            cerr << "ERROR parsing line: " << line << endl;
             continue;
         }
 
@@ -171,17 +172,18 @@ Network::~Network() {
 
 
 void Network::build() {
-    //calls all reads at once
-    //Rever os paths para os ficheiros serem lidos corretamente.
 
+    /*
     this->read_reservoirsFile("Dataset/Reservoirs_Madeira.csv");
     this->read_citiesFile("Dataset/Cities_Madeira.csv");
     this->read_stationsFile("Dataset/Stations_Madeira.csv");
     this->read_pipesFile("Dataset/Pipes_Madeira.csv");
-    //this->read_reservoirsFile("Dataset/Reservoir.csv");
-    //this->read_citiesFile("Dataset/Cities.csv");
-    //this->read_stationsFile("Dataset/Stations.csv");
-    //this->read_pipesFile("Dataset/Pipes.csv");
+    */
+
+    this->read_reservoirsFile("LargeDataSet/Reservoir.csv");
+    this->read_citiesFile("LargeDataSet/Cities.csv");
+    this->read_stationsFile("LargeDataSet/Stations.csv");
+    this->read_pipesFile("LargeDataSet/Pipes.csv");
 }
 
 
@@ -245,138 +247,91 @@ unordered_map<string , pair<double,double>> Network::verifyWaterSupply() {
     return cityDeficitsMap;
 }
 
-
-
-
-
-// T3.1
-
-
-
-
 // T3.2
-
-void Network::temporarilyRemoveStation(const string& stationCode) {
-    Vertex* stationVertex = findVertex(stationCode);
-    if (stationVertex == nullptr) {
-        cerr << "Station with code " << stationCode << " not found!" << endl;
-        return;
-    }
-
-    stationVertex->removeOutgoingEdges();
+vector<Vertex *> Network::getVertexSet() {
+    return this->vertexSet;
 }
 
-bool Network::checkDeliveryCapacityAfterRemoval(const string& stationCode) {
-    temporarilyRemoveStation(stationCode);
-
-    for (Vertex* cityVertex : vertexSet) {
-        if (cityVertex->getInfo().getIsCity()) {
-            double demand = cityVertex->getInfo().getdemand();
-            double totalCapacity = 0.0;
-
-            for (Edge* edge : cityVertex->getIncoming()) {
-                totalCapacity += edge->getCapacity();
-            }
-
-            if (demand > totalCapacity) {
-                restoreNetwork();
-                return false;
-            }
+vector<Vertex*> Network::getCities() const {
+    vector<Vertex*> cities;
+    for (Vertex* vertex : vertexSet) {
+        if (vertex->getInfo().getIsCity()) {
+            cities.push_back(vertex);
         }
     }
-
-    restoreNetwork();
-    return true;
+    return cities;
 }
 
+void Network::determineCriticalStations() {
+    vector<Vertex*> criticalStations;
 
-map<string, double> Network::identifyMostAffectedCities(const string& stationCode) {
-    map<string, double> affectedCities;
+    for (Vertex* stationVertex : vertexSet) {
+        Info stationInfo = stationVertex->getInfo();
 
-    temporarilyRemoveStation(stationCode);
+        if (!stationInfo.getIsPumpingStation()) {
+            continue;
+        }
 
-    for (Vertex* cityVertex : vertexSet) {
-        if (cityVertex->getInfo().getIsCity()) {
-            double demand = cityVertex->getInfo().getdemand();
-            double totalCapacity = 0.0;
+        string stationCode = stationInfo.getCode();
+        removeVertex(stationCode);
 
-            for (Edge* edge : cityVertex->getIncoming()) {
-                totalCapacity += edge->getCapacity();
+        runEdmondsKarp();
+
+        double originalMaxFlow = calculateCityMaxFlow(findVertex("MSink"));
+        
+
+        double newMaxFlow = 0.0;
+        for (Vertex* cityVertex : getCities()) {
+            for (Edge* e : cityVertex->getIncoming()) {
+                newMaxFlow += e->getFlow();
+            }
+        }
+
+        if (newMaxFlow < originalMaxFlow) {
+            criticalStations.push_back(stationVertex);
+        }
+
+        addVertex(stationInfo);
+
+        resetEdmondsKarp();
+    }
+
+    for (Vertex* criticalStation : criticalStations) {
+        Info stationInfo = criticalStation->getInfo();
+        map<string, double> affectedCities;
+
+        string stationCode = stationInfo.getCode();
+        removeVertex(stationCode);
+
+        runEdmondsKarp();
+
+        for (Vertex* cityVertex : getCities()) {
+            double oldFlow = 0.0;
+            for (Edge* e : cityVertex->getIncoming()) {
+                oldFlow += e->getFlow();
             }
 
-            double deficit = demand - totalCapacity;
+            double newFlow = calculateCityMaxFlow(cityVertex);
+            double deficit = oldFlow - newFlow;
 
             if (deficit > 0) {
                 affectedCities[cityVertex->getInfo().getCode()] = deficit;
             }
         }
-    }
 
-    restoreNetwork();
+        addVertex(stationInfo);
 
-    return affectedCities;
-}
+        resetEdmondsKarp();
 
-void Network::restoreNetwork() {
-    build();
-}
-
-vector<string> Network::findNotEssentialPumpingStations() {
-    vector<string> notEssentialStations;
-
-    for (Vertex* vertex : vertexSet) {
-        Info info = vertex->getInfo();
-        if (info.getIsPumpingStation() && !info.getIsEssential()) {
-            notEssentialStations.push_back(info.getCode());
+        cout << "Critical Pumping Station: " << stationCode << endl;
+        cout << "Affected Cities and Water Supply Deficits:" << endl;
+        for (const auto& city : affectedCities) {
+            cout << "City Code: " << city.first << " | Water Supply Deficit: " << city.second << endl;
         }
+        cout << "---------------------------------------------" << endl;
     }
-
-    return notEssentialStations;
 }
 
-double Network::calculateFlowAfterStationRemoval(const string& stationCode, const string& cityCode) {
-    Vertex* cityVertex = findVertex(cityCode);
-
-    if (cityVertex == nullptr) {
-        cerr << "City with code " << cityCode << " not found!" << endl;
-        return 0.0;
-    }
-
-    edmondsKarp(this, "MSrc", "MSink");
-
-    double newFlow = 0.0;
-
-    for (Edge* edge : cityVertex->getIncoming()) {
-        if (edge->getDest()->getInfo().getCode() != stationCode) {
-            newFlow += (edge->getCapacity() - edge->getFlow());
-        }
-    }
-
-    return newFlow;
-}
-
-
-
-
-vector<Vertex *> Network::getVertexSet() {
-    return this->vertexSet;
-}
-
-
-double Network::calculateWaterDeficit(const string& cityCode, double oldFlow, double newFlow) {
-    Vertex* cityVertex = findVertex(cityCode);
-
-    if (cityVertex == nullptr) {
-        cerr << "City with code " << cityCode << " not found!" << endl;
-        return 0.0;
-    }
-
-    double demand = cityVertex->getInfo().getdemand();
-
-    double waterDeficit = demand - newFlow;
-
-    return waterDeficit;
-}
 
 // T3.3 Lidar com impacto de remoção de pipelines a nivel geral ou especifico para uma cidade
 

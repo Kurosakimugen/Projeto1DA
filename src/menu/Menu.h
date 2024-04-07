@@ -118,6 +118,7 @@ public:
      */
     void CityPipelineImpact(Network network, Vertex* CityVertex);
 
+    void determineCriticalStationsMenu(Network &network);
 };
 
 

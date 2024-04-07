@@ -101,16 +101,5 @@ void edmondsKarp(Network *network, string sourceCode, string targetCode){
         double flow = findMinResidualAlongPath(sourceVertex, targetVertex);
         augmentFlowOfPath(sourceVertex, targetVertex, flow);
     }
-/* Calculate and save incoming flow for each vertex*/
 
-/*
-    for (auto &v : network->getVertexSet()) {
-
-        double incomingFlow = 0;
-        for (auto e: v->getIncoming()) {
-            incomingFlow += e->getFlow();
-        }
-        v->setFlow(incomingFlow);
-    }
-    */
 }

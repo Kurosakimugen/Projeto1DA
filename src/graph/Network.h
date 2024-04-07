@@ -244,6 +244,10 @@ public:
      * @return list with the results
      */
     unordered_map<string, string> CityPipelineImpact(Vertex *cityver) ;
+
+    vector<Vertex *> getCities() const;
+
+    void determineCriticalStations();
 };
 
 
