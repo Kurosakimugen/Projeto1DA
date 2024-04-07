@@ -263,7 +263,7 @@ void Menu::insertCityCode(Network network, int option) {
         }
         case 2:{
             nextPage();
-            //todo
+            CityPipelineImpact(network, cityVertex);
         }
     }
 
@@ -591,7 +591,7 @@ void Menu::pipelinefailureimpact(Network network) {
             break;
         case 2:
             nextPage();
-            CityPipelineImpact(network);
+            insertCityCode(network, 2);
             break;
     }
 }
@@ -627,29 +627,10 @@ void Menu::AllPipelineImpact(Network network) {
     }
 }
 
-void Menu::CityPipelineImpact(Network network) {
+void Menu::CityPipelineImpact(Network network, Vertex* CityVertex) {
     cout << " _____________________________________________ \n"
             "|       Specific City Pipeline Impact         |\n"
             "                                               \n";
-
-    cout << "List of Cities:\n";
-    for (const auto& [key, vertex] : network.getVertices()) {
-        Info info = vertex->getInfo();
-        if (info.getIsCity()) {
-            cout << "City Code: " << info.getCode() << endl;
-        }
-    }
-
-    cout << "Enter the code of the City you want to analyze: ";
-    string CityCode;
-    getline(cin, CityCode);
-
-    Vertex* CityVertex = network.findVertex(CityCode);
-
-    if (CityVertex == nullptr || !CityVertex->getInfo().getIsCity()) {
-        cout << "Invalid City code.\n";
-        return;
-    }
 
     auto impact = network.CityPipelineImpact(CityVertex);
 

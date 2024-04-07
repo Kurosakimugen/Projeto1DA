@@ -116,7 +116,7 @@ public:
      * Function that start the process for a city check pipeline failure
      * @param network
      */
-    void CityPipelineImpact(Network network);
+    void CityPipelineImpact(Network network, Vertex* CityVertex);
 
 };
 
