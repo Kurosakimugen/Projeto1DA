@@ -3,6 +3,8 @@
 //#include "../graph/Network.cpp"
 #include <iostream>
 #include <iomanip>
+#include <chrono>
+#include <fstream>
 
 
 using namespace std;
@@ -110,7 +112,7 @@ void Menu::maxAmountWater(Network network) {
             break;
         case 2:
             nextPage();
-            insertCityCode(network);
+            insertCityCode(network, 1);
             break;
     }
 
@@ -118,8 +120,10 @@ void Menu::maxAmountWater(Network network) {
 
 // T2.1
 void Menu::maxAmountWater_AllCities(Network network) {
+
+
     network.runEdmondsKarp();
-    
+
     cout << " _____________________________________________ \n"
             "|       Calculate Max Amount of Water         |\n"
             "                                               \n";
@@ -131,13 +135,14 @@ void Menu::maxAmountWater_AllCities(Network network) {
             for(auto e : v->getIncoming()){
                 flow += e->getFlow();
             }
-            cout << "  " << v->getInfo().getName() << " has a max flow of: " << flow << "\n";
+            cout << "   " << v->getInfo().getName() <<"(" <<v->getInfo().getCode() << ")"<<" max flow: " << flow << "\n";
         }
     }
 
     cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
+
 
 
     network.resetEdmondsKarp();
@@ -195,7 +200,7 @@ void Menu::maxAmountWater_OneCity(Network network, Vertex* cityVertex) {
 }
 
 // T2.1
-void Menu::insertCityCode(Network network) {
+void Menu::insertCityCode(Network network, int option) {
     cout << " _____________________________________________ \n"
             "|               Insert City Code              |\n"
             "                                               \n"
@@ -226,7 +231,7 @@ void Menu::insertCityCode(Network network) {
 
         if(cmd=="r"){
             nextPage();
-            insertCityCode(network);
+            insertCityCode(network, option);
         }
     }
 
@@ -247,34 +252,56 @@ void Menu::insertCityCode(Network network) {
 
         if(cmd=="r"){
             nextPage();
-            insertCityCode(network);
+            insertCityCode(network, option  );
         }
     }
 
-    maxAmountWater_OneCity(network, cityVertex);
+    switch (option) {
+        case 1:{
+            nextPage();
+            maxAmountWater_OneCity(network, cityVertex);
+        }
+        case 2:{
+            nextPage();
+            //todo
+        }
+    }
+
+
 }
 
 
-// T2.2
+// T2.2 - todo
 void Menu::verifyWaterSupply(Network& network) {
+
+    unordered_map<string, pair<double,double>> cityDeficitsMap;
+    cityDeficitsMap = network.verifyWaterSupply();
+
     cout << " _____________________________________________ \n"
-            "|        Verify Water Supply                    |\n"
+            "|          Verify Water Supply                |\n"
             "                                               \n";
 
-    auto waterDeficits = network.verifyWaterSupply();
+    for(auto e : cityDeficitsMap){
+        auto v = network.findVertex(e.first);
 
-    if (waterDeficits.empty()) {
-        cout << "All cities are supplied with enough water.\n";
-    } else {
-        cout << "The following cities are facing water supply deficits:\n";
-        for (const auto& [cityCode, deficit] : waterDeficits) {
-            cout << "City Code: " << cityCode << ", Water Deficit: " << deficit << endl;
-        }
+        pair<double, double> values = e.second;
+
+        double flow = values.first;
+        double demand = values.second;
+
+        cout << v->getInfo().getName() << "(" << v->getInfo().getCode() <<")" << "\n"
+        <<"    Demand: " << demand <<"\n"
+        <<"    Actual Flow: " << flow << "\n"
+        <<"    Deficit: " << (demand - flow)<< "\n";
+
     }
 
     cout << "                                               \n"
             " > Back [0]                        > Quit [q]  \n"
             " _____________________________________________ \n";
+
+
+
 
     string cmd;
     getline(cin, cmd);

@@ -86,7 +86,7 @@ public:
      * Function to verify the water suplies
      * @return
      */
-    unordered_map<string, double> verifyWaterSupply();
+    unordered_map<string, pair<double,double>> verifyWaterSupply();
 
     /**
      * Function to verify the capacity of x
